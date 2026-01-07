@@ -4,8 +4,7 @@ import gui
 
 class Spiel:
     def __init__(self):
-        self.tilemap = karte.TileMap()        # Kartenobjekt erzeugen
-        self.checkbox = gui.Checkbox()
+        self.checkbox = gui.Checkbox() #CHeckbox erzeugen
         self.button = gui.Button()
 
     def main_loop(self):
@@ -15,6 +14,9 @@ class Spiel:
 
         title = pygame.display.set_caption("Tower Defense")
         screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+
+        self.tilemap = karte.TileMap(screen.get_size())        # Kartenobjekt erzeugen (erst hier weil vorher screen size nicht bekannt)
+
         clock = pygame.time.Clock()
 
         running = True
@@ -31,9 +33,9 @@ class Spiel:
  
             # HIER DAS SPIEL RENDERN
             self.tilemap.draw_tilemap(screen)
-            self.tilemap.tile_clicked(screen)
+            #self.tilemap.tile_clicked(screen)
 
-            self.checkbox.draw(screen, 1010,10,20,20,(0,0,0)) #Grid Checkbox
+            #self.checkbox.draw(screen, 1010,10,20,20,(0,0,0)) #Grid Checkbox
 
             # Das Display mit flip() aktualisieren, um das Gezeichnete auf dem Bildschirm anzuzeigen.
             pygame.display.flip()
