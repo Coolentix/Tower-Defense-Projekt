@@ -1,35 +1,49 @@
 import pygame
+import karte 
+import gui
 
-# pygame setup
-pygame.init()
-screen = pygame.display.set_mode((1280, 720))
-clock = pygame.time.Clock()
-running = True
+class Spiel:
+    def __init__(self):
+        self.tilemap = karte.TileMap()        # Kartenobjekt erzeugen
+        self.checkbox = gui.Checkbox()
+        self.button = gui.Button()
 
-while running:
-    # Ereignisse abfragen
-    # Das pygame.QUIT-Event wird ausgelöst, wenn der Benutzer das Fenster über das Schließen-Symbol (X) beendet.
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    def main_loop(self):
+               
+        # pygame setup
+        pygame.init()
 
-    # Den Bildschirm mit einer Farbe füllen, um alles aus dem letzten Frame zu löschen.
-    screen.fill("purple")
+        title = pygame.display.set_caption("Tower Defense")
+        screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        clock = pygame.time.Clock()
 
-    # HIER DAS SPIEL RENDERN
+        running = True
 
-    # Das Display mit flip() aktualisieren, um das Gezeichnete auf dem Bildschirm anzuzeigen.
-    pygame.display.flip()
+        while running:
+            # Ereignisse abfragen
+            # Das pygame.QUIT-Event wird ausgelöst, wenn der Benutzer das Fenster über das Schließen-Symbol (X) beendet.
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
 
-    clock.tick(60)  # limitiert FPS auf 60
+            # Den Bildschirm mit einer Farbe füllen, um alles aus dem letzten Frame zu löschen.
+            screen.fill("white")
+ 
+            # HIER DAS SPIEL RENDERN
+            self.tilemap.draw_tilemap(screen)
+            self.tilemap.tile_clicked(screen)
 
-pygame.quit()
+            self.checkbox.draw(screen, 1010,10,20,20,(0,0,0)) #Grid Checkbox
+
+            # Das Display mit flip() aktualisieren, um das Gezeichnete auf dem Bildschirm anzuzeigen.
+            pygame.display.flip()
+
+            clock.tick(60)  # limitiert FPS auf 60
+
+        pygame.quit()
 
 # Hier die Klassen
 # jeweils in einzählne Dateien für übersichtlichkeit?
-
-class Karte:
-    pass
 
 class Gegner:
     def __init__(self):
@@ -58,3 +72,6 @@ class Spiel_Attribute:
         leben = 0
         score = 0
         zeit = 0
+
+spiel = Spiel()
+spiel.main_loop()
