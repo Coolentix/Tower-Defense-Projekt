@@ -33,9 +33,8 @@ class Spiel:
  
             # HIER DAS SPIEL RENDERN
             self.tilemap.draw_tilemap(screen)
-            #self.tilemap.tile_clicked(screen)
 
-            #self.checkbox.draw(screen, 1010,10,20,20,(0,0,0)) #Grid Checkbox
+            #self.checkbox.draw(screen, 1010,10,20,20,(0,0,0)) #Grid ON/OFF Checkbox
 
             # Das Display mit flip() aktualisieren, um das Gezeichnete auf dem Bildschirm anzuzeigen.
             pygame.display.flip()
@@ -76,4 +75,4 @@ class Spiel_Attribute:
         zeit = 0
 
 spiel = Spiel()
-spiel.main_loop()
+spiel.main_loop()   
