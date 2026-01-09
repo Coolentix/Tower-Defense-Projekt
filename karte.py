@@ -2,8 +2,8 @@ import pygame
 
 class TileMap:
     def __init__(self,screen_size):
-        self.ROWS = 9                                      #Spalten
-        self.COLS = 16                                      #Zeilen
+        self.ROWS = 10                                      #Spalten
+        self.COLS = 14                                    #Zeilen
         self.screen_x, self.screen_y = screen_size          #Bildschirm göße errechnen
         self.TILE_SIZE = (self.screen_y-20)//self.ROWS      #Größe des Tiles
         self.start_x = 10                                   #Verschiebung X
@@ -44,7 +44,7 @@ class TileMap:
         row = (mouse_y - self.start_y) // self.TILE_SIZE
         if 0 <= row < self.ROWS and 0 <= col < self.COLS:
             tile = self.tilemap[row][col]
-            pygame.draw.rect(screen, (0, 0, 0), tile.rect)
+            pygame.draw.rect(screen, self.tile_color, tile.rect)
 
             if pygame.mouse.get_pressed()[0] == 1:
                 tile.color = self.tile_color
@@ -63,7 +63,7 @@ class Tile:
     def __init__(self, x, y, size):
         self.rect = pygame.Rect(x, y, size, size)
         self.color = (255, 255, 255)
-        #self.type = "empty"
+        self.type = "empty"
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
