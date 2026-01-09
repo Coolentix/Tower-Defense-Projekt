@@ -4,7 +4,7 @@ import gui
 
 class Spiel:
     def __init__(self):
-        self.checkbox = gui.Checkbox() #CHeckbox erzeugen
+        pass
 
     def main_loop(self):
                
@@ -19,7 +19,8 @@ class Spiel:
 
         clock = pygame.time.Clock()
 
-        button = gui.Button(x=screen_x-50,y=0,width=50,height=50,color=(255, 0, 0),action=self.quit_game)
+        quit_button = gui.Button(x=screen_x-60,y=10,width=50,height=50,color=(255, 0, 0),action=self.quit_game)
+        grid_checkbox = gui.Checkbox(x=self.tilemap.TILE_SIZE*self.tilemap.COLS+20,y=10,width=45,height=45,color=(0, 0, 0),state=0,action=self.tilemap.grid_ON_OFF)
 
         running = True
 
@@ -30,7 +31,9 @@ class Spiel:
                 if event.type == pygame.QUIT:
                     running = False
 
-                button.handle_event(event)
+                quit_button.handle_event(event)
+                grid_checkbox.handle_event(event)
+                
 
             # Den Bildschirm mit einer Farbe füllen, um alles aus dem letzten Frame zu löschen.
             screen.fill("white")
@@ -38,7 +41,8 @@ class Spiel:
             # HIER DAS SPIEL RENDERN
             self.tilemap.draw_tilemap(screen)
 
-            button.draw(screen)
+            quit_button.draw(screen)
+            grid_checkbox.draw(screen)
 
             #self.checkbox.draw(screen, 1010,10,20,20,(0,0,0)) #Grid ON/OFF Checkbox
 

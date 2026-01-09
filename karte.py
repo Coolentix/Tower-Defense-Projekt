@@ -9,6 +9,7 @@ class TileMap:
         self.start_x = 10                                   #Verschiebung X
         self.start_y = 10                                   #statische Verschiebung Y
         self.tile_color = (255,255,255)
+        self.grid_active = False
 
         # Erzeuge eine Tilemap
         self.tilemap = [[Tile(self.start_x + col*self.TILE_SIZE,
@@ -58,12 +59,18 @@ class TileMap:
         if pygame.key.get_pressed()[pygame.K_3]:
             self.tile_color = (255,255,255)
 
+    def grid_ON_OFF(self,state):
+        self.grid_active = not self.grid_active
+        for row in range(self.ROWS):
+            for col in range(self.COLS):
+                self.tilemap[row][col].border = 2 if state  else 0
     
 class Tile:
-    def __init__(self, x, y, size):
+    def __init__(self, x, y, size, border=False):
         self.rect = pygame.Rect(x, y, size, size)
         self.color = (255, 255, 255)
+        self.border = border
         self.type = "empty"
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
+        pygame.draw.rect(screen, self.color, self.rect,self.border)
