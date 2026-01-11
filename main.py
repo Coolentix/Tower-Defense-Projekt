@@ -15,6 +15,8 @@ class Spiel:
         screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
         self.tilemap = karte.TileMap(screen.get_size())        # Kartenobjekt erzeugen (erst hier weil vorher screen size nicht bekannt)
+        self.tilemap.map_one()
+
         screen_x, screen_y = screen.get_size()
 
         clock = pygame.time.Clock()
@@ -40,11 +42,11 @@ class Spiel:
  
             # HIER DAS SPIEL RENDERN
             self.tilemap.draw_tilemap(screen)
+            self.tilemap.map_one()
+
 
             quit_button.draw(screen)
-            grid_checkbox.draw(screen)
-
-            #self.checkbox.draw(screen, 1010,10,20,20,(0,0,0)) #Grid ON/OFF Checkbox
+            grid_checkbox.draw(screen) #Grid ON/OFF
 
             # Das Display mit flip() aktualisieren, um das Gezeichnete auf dem Bildschirm anzuzeigen.
             pygame.display.flip()

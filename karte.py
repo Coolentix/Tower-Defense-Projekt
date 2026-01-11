@@ -12,11 +12,8 @@ class TileMap:
         self.grid_active = False
 
         # Erzeuge eine Tilemap
-        self.tilemap = [[Tile(self.start_x + col*self.TILE_SIZE,
-                                self.start_y + row*self.TILE_SIZE,
-                                self.TILE_SIZE)
-                                for col in range(self.COLS)]
-                                for row in range(self.ROWS)]
+        self.tilemap = None
+        self.empty_map()
         
     def draw_tilemap(self,screen):
         for row in range(self.ROWS):
@@ -63,7 +60,19 @@ class TileMap:
         self.grid_active = not self.grid_active
         for row in range(self.ROWS):
             for col in range(self.COLS):
+                #color_tmp = self.tilemap[row][col].color
                 self.tilemap[row][col].border = 2 if state  else 0
+                #self.tilemap[row][col].color = (0,0,0) if state else color_tmp
+
+    def empty_map(self):
+        self.tilemap = [[Tile(self.start_x + col*self.TILE_SIZE, self.start_y + row*self.TILE_SIZE, self.TILE_SIZE) for col in range(self.COLS)] for row in range(self.ROWS)]
+    
+    def map_one(self):
+        path = [(1,0), (1, 1), (1, 2), (1, 3), (1, 4),(1,5),(1,6),(1,7),(1,8),(1,9),(2,9),(3,9),(3,8),(3,7),(3,6),(3,5),(3,4),(4,4),(5,4),(6,4),(7,4),(8,4),(9,4)]
+        # Schleife durch die Koordinaten und Farbe setzen
+        for x, y in path:
+            self.tilemap[x][y].color = (0, 0, 255)
+        
     
 class Tile:
     def __init__(self, x, y, size, border=False):
