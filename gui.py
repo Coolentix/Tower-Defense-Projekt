@@ -1,9 +1,5 @@
 import pygame
 
-class GUI:
-    def __init__(self):
-        pass
-
 class Button:
     def __init__(self, x, y, width, height, color, action):
         self.rect = pygame.Rect(x, y, width, height)

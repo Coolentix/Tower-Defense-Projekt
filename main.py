@@ -41,7 +41,7 @@ class Spiel:
             screen.fill("white")
  
             # HIER DAS SPIEL RENDERN
-            self.tilemap.draw_tilemap(screen)
+            self.tilemap.draw_tilemap(screen,)
             self.tilemap.map_one()
 
 
@@ -62,14 +62,6 @@ class Spiel:
 
 # Hier die Klassen
 # jeweils in einzählne Dateien für übersichtlichkeit?
-
-class Gegner:
-    def __init__(self):
-        leben = 0
-        schaden = 0
-        
-    def wegsuche(self):
-        pass
 
 class Freunde:
     def __init__(self):
