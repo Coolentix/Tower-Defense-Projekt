@@ -15,8 +15,10 @@ class Spiel:
 
         self.screen_x, self.screen_y = self.screen.get_size()
 
-        
         #Hier Rendern
+        self.start_button = gui.Button(x=self.screen_x//2-100,y=self.screen_y//2-50,width=200,height=100,color=(255, 0, 0),action=self.game_state)
+
+
         self.quit_button = gui.Button(x=self.screen_x-60,y=10,width=50,height=50,color=(255, 0, 0),action=self.quit_game)
         self.grid_checkbox = gui.Checkbox(x=self.tilemap.TILE_SIZE*self.tilemap.COLS+20,y=10,width=45,height=45,color=(0, 0, 0),state=0,action=self.tilemap.grid_ON_OFF)
 
@@ -54,12 +56,19 @@ class Spiel:
         self.running = False
         pygame.quit()
 
+    def game_state(self):
+        self.screen_state = self.GAME
+
     def menu(self):
         self.screen.fill((255,255,255))
+
+        self.start_button.draw(self.screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+
+            self.start_button.handle_event(event)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
