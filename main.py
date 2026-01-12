@@ -4,49 +4,43 @@ import gui
 
 class Spiel:
     def __init__(self):
-        pass
-
-    def main_loop(self):
-               
         # pygame setup
         pygame.init()
 
         title = pygame.display.set_caption("Tower Defense")
-        screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
-        self.tilemap = karte.TileMap(screen.get_size())        # Kartenobjekt erzeugen (erst hier weil vorher screen size nicht bekannt)
+        self.tilemap = karte.TileMap(self.screen.get_size())        # Kartenobjekt erzeugen (erst hier weil vorher screen size nicht bekannt)
         self.tilemap.map_one()
 
-        screen_x, screen_y = screen.get_size()
+        self.screen_x, self.screen_y = self.screen.get_size()
+
+        
+        #Hier Rendern
+        self.quit_button = gui.Button(x=self.screen_x-60,y=10,width=50,height=50,color=(255, 0, 0),action=self.quit_game)
+        self.grid_checkbox = gui.Checkbox(x=self.tilemap.TILE_SIZE*self.tilemap.COLS+20,y=10,width=45,height=45,color=(0, 0, 0),state=0,action=self.tilemap.grid_ON_OFF)
 
         clock = pygame.time.Clock()
 
-        quit_button = gui.Button(x=screen_x-60,y=10,width=50,height=50,color=(255, 0, 0),action=self.quit_game)
-        grid_checkbox = gui.Checkbox(x=self.tilemap.TILE_SIZE*self.tilemap.COLS+20,y=10,width=45,height=45,color=(0, 0, 0),state=0,action=self.tilemap.grid_ON_OFF)
+        self.MENU = "menu"
+        self.GAME = "game"
 
-        running = True
+        self.screen_state = self.MENU
 
-        while running:
-            # Ereignisse abfragen
-            # Das pygame.QUIT-Event wird ausgelöst, wenn der Benutzer das Fenster über das Schließen-Symbol (X) beendet.
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+        self.tilemap.map_one()
 
-                quit_button.handle_event(event)
-                grid_checkbox.handle_event(event)
+        self.running = True
+
+        while self.running:
+
+            #Menu Handle:
+            if self.screen_state == self.MENU:
+                self.menu()
+            elif self.screen_state == self.GAME:
+                self.game()
                 
 
             # Den Bildschirm mit einer Farbe füllen, um alles aus dem letzten Frame zu löschen.
-            screen.fill("white")
- 
-            # HIER DAS SPIEL RENDERN
-            self.tilemap.draw_tilemap(screen,)
-            self.tilemap.map_one()
-
-
-            quit_button.draw(screen)
-            grid_checkbox.draw(screen) #Grid ON/OFF
 
             # Das Display mit flip() aktualisieren, um das Gezeichnete auf dem Bildschirm anzuzeigen.
             pygame.display.flip()
@@ -60,9 +54,47 @@ class Spiel:
         self.running = False
         pygame.quit()
 
-# Hier die Klassen
-# jeweils in einzählne Dateien für übersichtlichkeit?
+    def menu(self):
+        self.screen.fill((255,255,255))
 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            self.screen_state = self.GAME
+        #if keys[pygame.K_ESCAPE]:
+            #self.running = False
+
+
+    def game(self):
+        self.screen.fill("white")
+ 
+        # HIER DAS SPIEL RENDERN
+        self.tilemap.draw_tilemap(self.screen)
+
+        self.quit_button.draw(self.screen)
+        self.grid_checkbox.draw(self.screen) #Grid ON/OFF
+
+        # Ereignisse abfragen
+        # Das pygame.QUIT-Event wird ausgelöst, wenn der Benutzer das Fenster über das Schließen-Symbol (X) beendet.
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+
+            self.quit_button.handle_event(event)
+            self.grid_checkbox.handle_event(event)
+
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            self.screen_state = self.MENU
+        
+
+# Hier die Klassen
+
+# jeweils in einzählne Dateien für übersichtlichkeit?
 class Freunde:
     def __init__(self):
         schaden = 0
@@ -83,5 +115,4 @@ class Spiel_Attribute:
         score = 0
         zeit = 0
 
-spiel = Spiel()
-spiel.main_loop()   
+Spiel()

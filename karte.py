@@ -51,13 +51,16 @@ class TileMap:
 
         # auf Linker Maustasten druck tritt änderung in Kraft
             if pygame.mouse.get_pressed()[0] == 1:
-                tile.color = self.tile_color
-                tile.type = self.tile_type
-                if tile.type != 0:
-                    tile.border = False
-                elif tile.type == 0 and self.grid_active:
-                    tile.border = 2
-                    tile.color = (0,0,0)
+                if tile.type == 1:
+                    pass
+                else:
+                    tile.color = self.tile_color
+                    tile.type = self.tile_type
+                    if tile.type != 0:
+                        tile.border = False
+                    elif tile.type == 0 and self.grid_active:
+                        tile.border = 2
+                        tile.color = (0,0,0)
 
         #Je nach Taste ändert was gemalt wird (kann später noch auf Button geäandert werden)
         if pygame.key.get_pressed()[pygame.K_1]:
