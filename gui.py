@@ -1,6 +1,13 @@
 import pygame
 
-class Button:
+class GUIElement:
+    def draw(self, screen):
+        pass
+
+    def handle_event(self, event):
+        pass
+
+class Button(GUIElement):
     def __init__(self, x, y, width, height, color, action):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
@@ -17,7 +24,7 @@ class Button:
                 self.action()
 
 #Funktioniert Nicht
-class Checkbox:
+class Checkbox(GUIElement):
     def __init__(self, x, y, width, height, color,state,action):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
@@ -34,5 +41,24 @@ class Checkbox:
     def handle_event(self,event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
-                self.state = 1 - self.state  # Toggle
+                self.state = not self.state  # Toggle
                 self.action(self.state)
+
+
+class GUIManager:
+    def __init__(self):
+        self.elements = {"menu": [],"game": []}
+
+    def add_game(self, element):
+        self.elements["game"].append(element)
+    
+    def add_menu(self, element):
+        self.elements["menu"].append(element)
+
+    def draw(self, screen, state):
+        for e in self.elements.get(state, []):
+            e.draw(screen)
+
+    def handle_event(self, event, state):
+        for e in self.elements.get(state, []):
+            e.handle_event(event)
