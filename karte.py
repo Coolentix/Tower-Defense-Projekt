@@ -16,7 +16,7 @@ class TileMap:
         self.tilemap = None
         self.empty_map()
         
-    def draw_tilemap(self,screen):
+    def draw(self,screen):
         for row in range(self.ROWS):
             for col in range(self.COLS):
                 self.tilemap[row][col].draw(screen)
@@ -96,6 +96,9 @@ class TileMap:
         # Schleife durch die Koordinaten und Farbe setzen
         for x, y in path:
             self.tilemap[x][y].type = TileType.PATH
+
+    def handle_event(self,event):
+        pass
 
 class TileType:
     EMPTY = 0
