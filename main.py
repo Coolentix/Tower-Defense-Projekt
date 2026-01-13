@@ -14,8 +14,9 @@ class Spiel:
         self.gui = gui.GUIManager()
         #Hier Rendern
         #Menu
-        self.gui.add_menu(gui.Button(x=self.screen_x//2-100,y=self.screen_y//2-50,width=200,height=100,color=(255, 0, 0),action=self.game_state))
-        
+        self.gui.add_menu(gui.Button(x=self.screen_x//2-100, y=self.screen_y//2-50,width=200,height=100,color=(255, 0, 0),action=self.game_state))
+        self.gui.add_menu(gui.Text(self.screen_x//2, y=self.screen_y//2, text="Spielen", font_size=40, color=(255, 255, 255), center=True))
+                
         #Spiel
         self.tilemap = karte.TileMap(self.screen.get_size())
         self.gui.add_game(self.tilemap)        # Kartenobjekt erzeugen (erst hier weil vorher screen size nicht bekannt)

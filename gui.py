@@ -23,7 +23,7 @@ class Button(GUIElement):
             if self.rect.collidepoint(event.pos):
                 self.action()
 
-#Funktioniert Nicht
+#Funktioniert
 class Checkbox(GUIElement):
     def __init__(self, x, y, width, height, color,state,action):
         self.rect = pygame.Rect(x, y, width, height)
@@ -43,6 +43,38 @@ class Checkbox(GUIElement):
             if self.rect.collidepoint(event.pos):
                 self.state = not self.state  # Toggle
                 self.action(self.state)
+
+class Text(GUIElement):
+    def __init__(self, x, y,text,font_size=24,color=(255, 255, 255),font_path=None,center=False):
+        self.x = x
+        self.y = y
+        self.text = text
+        self.color = color
+        self.center = center
+
+        self.font = pygame.font.Font(font_path, font_size)
+        
+        self.surface = self.font.render(self.text, True, self.color)
+        self.rect = self.surface.get_rect()
+
+        if self.center:
+            self.rect.center = (self.x, self.y)
+        else:
+            self.rect.topleft = (self.x, self.y)
+
+    def set_text(self, new_text):
+        self.text = new_text
+        self._render_text()
+
+    def set_color(self, new_color):
+        self.color = new_color
+        self._render_text()
+
+    def draw(self, screen):
+        screen.blit(self.surface, self.rect)
+
+    def handle_event(self, event):
+        pass  # Text reagiert standardmäßig auf keine Events
 
 
 class GUIManager:
