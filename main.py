@@ -4,37 +4,45 @@ import gui
 
 class Spiel:
     def __init__(self):
-        self.checkbox = gui.Checkbox() #CHeckbox erzeugen
-        self.button = gui.Button()
-
-    def main_loop(self):
-               
         # pygame setup
         pygame.init()
 
         title = pygame.display.set_caption("Tower Defense")
-        screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.screen_x, self.screen_y = self.screen.get_size()
 
-        self.tilemap = karte.TileMap(screen.get_size())        # Kartenobjekt erzeugen (erst hier weil vorher screen size nicht bekannt)
+        self.gui = gui.GUIManager()
+        #Hier Rendern
+        #Menu
+        self.gui.add_menu(gui.Button(x=self.screen_x//2-100,y=self.screen_y//2-50,width=200,height=100,color=(255, 0, 0),action=self.game_state))
+        
+        #Spiel
+        self.tilemap = karte.TileMap(self.screen.get_size())
+        self.gui.add_game(self.tilemap)        # Kartenobjekt erzeugen (erst hier weil vorher screen size nicht bekannt)
+        self.gui.add_game(gui.Button(x=self.screen_x-60,y=10,width=50,height=50,color=(255, 0, 0),action=self.quit_game))
+        self.gui.add_game(gui.Checkbox(x=self.tilemap.TILE_SIZE*self.tilemap.COLS+20,y=10,width=45,height=45,color=(0, 0, 0),state=0,action=self.tilemap.grid_ON_OFF))
 
         clock = pygame.time.Clock()
 
-        running = True
+        self.MENU = "menu"
+        self.GAME = "game"
 
-        while running:
-            # Ereignisse abfragen
-            # Das pygame.QUIT-Event wird ausgelöst, wenn der Benutzer das Fenster über das Schließen-Symbol (X) beendet.
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+        self.screen_state = self.MENU
+
+        self.tilemap.map_one()
+
+        self.running = True
+
+        while self.running:
+
+            #Menu Handle:
+            if self.screen_state == self.MENU:
+                self.menu()
+            elif self.screen_state == self.GAME:
+                self.game()
+                
 
             # Den Bildschirm mit einer Farbe füllen, um alles aus dem letzten Frame zu löschen.
-            screen.fill("white")
- 
-            # HIER DAS SPIEL RENDERN
-            self.tilemap.draw_tilemap(screen)
-
-            #self.checkbox.draw(screen, 1010,10,20,20,(0,0,0)) #Grid ON/OFF Checkbox
 
             # Das Display mit flip() aktualisieren, um das Gezeichnete auf dem Bildschirm anzuzeigen.
             pygame.display.flip()
@@ -43,17 +51,60 @@ class Spiel:
 
         pygame.quit()
 
-# Hier die Klassen
-# jeweils in einzählne Dateien für übersichtlichkeit?
+#Definitionen
+    def quit_game(self):
+        self.running = False
+        pygame.quit()
 
-class Gegner:
-    def __init__(self):
-        leben = 0
-        schaden = 0
+    def game_state(self):
+        self.screen_state = self.GAME
+
+    def menu(self):
+        self.screen.fill((255,255,255))
+
+        #self.start_button.draw(self.screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+
+            self.gui.handle_event(event, self.screen_state)
+
         
-    def wegsuche(self):
-        pass
+        self.gui.draw(self.screen, self.screen_state)
 
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            self.screen_state = self.GAME
+        #if keys[pygame.K_ESCAPE]:
+            #self.running = False
+
+
+    def game(self):
+        self.screen.fill("white")
+ 
+        # HIER DAS SPIEL RENDERN
+        #self.tilemap.draw_tilemap(self.screen)
+
+        # Ereignisse abfragen
+        # Das pygame.QUIT-Event wird ausgelöst, wenn der Benutzer das Fenster über das Schließen-Symbol (X) beendet.
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+
+            self.gui.handle_event(event, self.screen_state)
+
+        
+        self.gui.draw(self.screen, self.screen_state)
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            self.screen_state = self.MENU
+        
+
+# Hier die Klassen
+
+# jeweils in einzählne Dateien für übersichtlichkeit?
 class Freunde:
     def __init__(self):
         schaden = 0
@@ -74,5 +125,4 @@ class Spiel_Attribute:
         score = 0
         zeit = 0
 
-spiel = Spiel()
-spiel.main_loop()   
+Spiel()
