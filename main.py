@@ -108,6 +108,10 @@ class Spiel:
         
         self.gui.draw(self.screen, self.screen_state)
 
+        for enemies in self.gui.elements:
+            if self.gui.elements[enemies] == gegner.Gegner:
+                enemies.update()
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             self.screen_state = self.MENU
