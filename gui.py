@@ -15,7 +15,7 @@ class Button(GUIElement):
 
     def draw(self, screen):
         mouse_pos = pygame.mouse.get_pos()
-        color = (150, 0, 0) if self.rect.collidepoint(mouse_pos) else self.color
+        color = (min(self.color[0] + 100, 255),min(self.color[1] + 100, 255),min(self.color[2] + 100, 255)) if self.rect.collidepoint(mouse_pos) else self.color
         pygame.draw.rect(screen, color, self.rect)
 
     def handle_event(self, event):

@@ -20,9 +20,8 @@ class TileMap:
         for row in range(self.ROWS):
             for col in range(self.COLS):
                 self.tilemap[row][col].draw(screen)
-
-                # schwarze Linie (Grid)
-                #pygame.draw.rect(screen, (0, 0, 0), rect, 1)    #zeichnet schwarze umrandung
+        
+        #zeichnet schwarze umrandung
 
         pygame.draw.line(screen, (0, 0, 0), (self.start_x, self.start_y), 
                                             (self.start_x, self.start_y + self.ROWS*self.TILE_SIZE), 2) #Karten Rand Links

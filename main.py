@@ -12,10 +12,14 @@ class Spiel:
         self.screen_x, self.screen_y = self.screen.get_size()
 
         self.gui = gui.GUIManager()
+
         #Hier Rendern
         #Menu
-        self.gui.add_menu(gui.Button(x=self.screen_x//2-100, y=self.screen_y//2-50,width=200,height=100,color=(255, 0, 0),action=self.game_state))
-        self.gui.add_menu(gui.Text(self.screen_x//2, y=self.screen_y//2, text="Spielen", font_size=40, color=(255, 255, 255), center=True))
+        start_y = self.screen_y // 2 - 320
+        spacing = 220
+        self.add_menu_button(500,200,"Spielen", start_y, self.game_state)
+        self.add_menu_button(500,200,"Einstellungen", start_y + spacing, self.settings_state)
+        self.add_menu_button(500,200,"Schließen", start_y + spacing * 2, self.quit_game)
                 
         #Spiel
         self.tilemap = karte.TileMap(self.screen.get_size())
@@ -27,6 +31,7 @@ class Spiel:
 
         self.MENU = "menu"
         self.GAME = "game"
+        self.SETTINGS = "setting"
 
         self.screen_state = self.MENU
 
@@ -41,6 +46,8 @@ class Spiel:
                 self.menu()
             elif self.screen_state == self.GAME:
                 self.game()
+            elif self.screen_state == self.SETTINGS:
+                self.settings()
                 
 
             # Den Bildschirm mit einer Farbe füllen, um alles aus dem letzten Frame zu löschen.
@@ -59,6 +66,9 @@ class Spiel:
 
     def game_state(self):
         self.screen_state = self.GAME
+
+    def settings_state(self):
+        self.screen_state = self.SETTINGS
 
     def menu(self):
         self.screen.fill((255,255,255))
@@ -101,7 +111,31 @@ class Spiel:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             self.screen_state = self.MENU
+
+    def settings(self):
+        self.screen.fill((255,255,255))
+
+        #self.start_button.draw(self.screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+
+            self.gui.handle_event(event, self.screen_state)
+
         
+        self.gui.draw(self.screen, self.screen_state)
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            self.screen_state = self.MENU
+
+    def add_menu_button(self, width, height, text, y, action):
+        BUTTON_W, BUTTON_H = width, height
+
+        self.gui.add_menu(gui.Button(x=self.screen_x // 2 - BUTTON_W // 2,y=y,width=BUTTON_W,height=BUTTON_H,color=(0, 0, 0),action=action))
+
+        self.gui.add_menu(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text,font_size=100,color=(255, 255, 255),center=True))
 
 # Hier die Klassen
 
