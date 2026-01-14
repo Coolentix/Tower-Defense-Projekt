@@ -16,7 +16,7 @@ class Gegner(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         # Pfad übernehmen
-        self.path = [(1,0), (1, 1), (1, 2), (1, 3), (1, 4),(1,5),(1,6),(1,7),(1,8),(1,9),(2,9),(3,9),(3,8),(3,7),(3,6),(3,5),(3,4),(4,4),(5,4),(6,4),(7,4),(8,4),(9,4)]
+        self.path = path
 
     def update(self):
         if not self.path:
@@ -36,8 +36,7 @@ class Gegner(pygame.sprite.Sprite):
             self.rect.y += self.speed * dy / distance
 
     def draw(self, screen):
-        #screen.blit(self.image, self.rect)
-        pass
+        screen.blit(self.image, self.rect)
 
     def handle_event(self, event):
         pass
