@@ -1,6 +1,7 @@
 import pygame
 import karte 
 import gui
+import gegner
 
 class Spiel:
     def __init__(self):
@@ -12,6 +13,7 @@ class Spiel:
         self.screen_x, self.screen_y = self.screen.get_size()
 
         self.gui = gui.GUIManager()
+        #self.gegner = gegener.Gegner()
 
         #Hier Rendern
         #Menu
@@ -42,6 +44,10 @@ class Spiel:
         self.gui.add_game(self.enemy)
 
         self.running = True
+
+        #Gegner erstellen
+        self.enemy = gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap.map_one())
+        self.gui.add_game(self.enemy)
 
         while self.running:
 
@@ -111,7 +117,6 @@ class Spiel:
 
         
         self.gui.draw(self.screen, self.screen_state)
-
         for enemies in self.gui.elements:
             if self.gui.elements[enemies] == gegner.Gegner:
                 enemies.update()
