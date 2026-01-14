@@ -1,41 +1,45 @@
 import pygame
 
 class Gegner(pygame.sprite.Sprite):
-    def __init__(self, EnemyType, weg):
+    def __init__(self, enemy_type, path):
         super().__init__()
 
-        self.EnemyType = EnemyType
-        stats = EnemyType.Enemy_Stats[EnemyType]
+        self.enemy_type = enemy_type
+        self.Enemy_Stats = EnemyType.Enemy_Stats[enemy_type]
 
-        self.speed = stats["speed"]
-        self.hp = stats["health"]
-        self.damage = stats["damage"]  
+        self.speed = self.Enemy_Stats["speed"]
+        self.hp = self.Enemy_Stats["health"]
+        self.damage = self.Enemy_Stats["damage"]
 
         self.image = pygame.Surface((30, 30))
-        self.image.fill((255, 0, 0))  # Rotes Quadrat als Platzhalter
-        self.weg = []  # Liste der Wegpunkte
- 
+        self.image.fill((255, 0, 0))
+        self.rect = self.image.get_rect()
+
+        # Pfad übernehmen
+        self.path = path
+
     def update(self):
+        if not self.path:
+            self.kill()
+            return
 
-        if not self.weg:
-            player.leben -= self.damage  # Schaden am Spieler zufügen
-            self.kill()  # Entfernt das Sprite, wenn kein Weg mehr da ist
-            
+        target_x, target_y = self.path[0]
+        dx = target_x - self.rect.x
+        dy = target_y - self.rect.y
+        distance = (dx**2 + dy**2) ** 0.5
+
+        if distance <= self.speed:
+            self.rect.topleft = (target_x, target_y)
+            self.path.pop(0)
         else:
+            self.rect.x += self.speed * dx / distance
+            self.rect.y += self.speed * dy / distance
 
-            target_x, target_y = self.weg[0]
-            direction_x = target_x - self.rect.x
-            direction_y = target_y - self.rect.y
-            distance = (direction_x**2 + direction_y**2) ** 0.5
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
 
-            if distance < self.speed:
-                self.rect.x = target_x
-                self.rect.y = target_y
-                self.weg.pop(0)
-            else:
-                self.rect.x += self.speed * direction_x / distance
-                self.rect.y += self.speed * direction_y / distance
-        
+    def handle_event(self, event):
+        pass
 
 class EnemyType:
     WALKER = 0
@@ -43,7 +47,7 @@ class EnemyType:
     TANK = 2
 
     Enemy_Stats = {
-        WALKER: {'health': 10, 'speed': 2, 'damage': 10},
-        RUNNER: {'health': 7, 'speed': 4, 'damage': 8},
-        TANK: {'health': 20, 'speed': 1, 'damage': 20},
+        WALKER: {"health": 10, "speed": 2, "damage": 10},
+        RUNNER: {"health": 7, "speed": 4, "damage": 8},
+        TANK: {"health": 20, "speed": 1, "damage": 20},
     }
