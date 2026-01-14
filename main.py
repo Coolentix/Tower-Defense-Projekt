@@ -36,6 +36,10 @@ class Spiel:
         self.screen_state = self.MENU
 
         self.tilemap.map_one()
+        
+        #Gegner erstellen
+        self.enemy = gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap.map_one())
+        self.gui.add_game(self.enemy)
 
         self.running = True
 
