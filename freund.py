@@ -7,6 +7,9 @@ class Freund:
         self.reichweite = 0
         self.angriffs_geschwindigkeit = 0
 
+    def draw(self):
+        pass
+
 class Projektil:
     def __init__(self,freund):
         self.freund = freund

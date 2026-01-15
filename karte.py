@@ -1,4 +1,5 @@
 import pygame
+import freund
 
 class TileMap:
     def __init__(self,screen_size):
