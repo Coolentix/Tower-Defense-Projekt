@@ -2,6 +2,7 @@ import pygame
 import karte 
 import gui
 import gegner
+import freund
 
 class Spiel:
     def __init__(self):
@@ -26,8 +27,11 @@ class Spiel:
         #Spiel
         self.tilemap = karte.TileMap(self.screen.get_size())
         self.gui.add_game(self.tilemap)        # Kartenobjekt erzeugen (erst hier weil vorher screen size nicht bekannt)
+        self.tilemap.map_one()
         self.gui.add_game(gui.Button(x=self.screen_x-60,y=10,width=50,height=50,color=(255, 0, 0),action=self.quit_game))
         self.gui.add_game(gui.Checkbox(x=self.tilemap.TILE_SIZE*self.tilemap.COLS+20,y=10,width=45,height=45,color=(0, 0, 0),state=0,action=self.tilemap.grid_ON_OFF))
+        self.gui.add_game(freund.Freund())
+        self.gui.add_game(freund.Projektil(freund))
 
         clock = pygame.time.Clock()
 
@@ -35,9 +39,7 @@ class Spiel:
         self.GAME = "game"
         self.SETTINGS = "setting"
 
-        self.screen_state = self.MENU
-
-        self.tilemap.map_one()
+        self.screen_state = self.GAME
         
         #Gegner erstellen
         self.enemy = gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap.map_one())
@@ -153,13 +155,6 @@ class Spiel:
 # Hier die Klassen
 
 # jeweils in einzählne Dateien für übersichtlichkeit?
-class Freunde:
-    def __init__(self):
-        schaden = 0
-        rasse = ""
-        reichweite = 0
-        angriffs_geschwindigkeit = 0
-
 class Projektil:
     pass
 

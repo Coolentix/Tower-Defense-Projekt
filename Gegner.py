@@ -38,9 +38,6 @@ class Gegner(pygame.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
-    def handle_event(self, event):
-        pass
-
 class EnemyType:
     WALKER = 0
     RUNNER = 1

@@ -73,9 +73,6 @@ class Text(GUIElement):
     def draw(self, screen):
         screen.blit(self.surface, self.rect)
 
-    def handle_event(self, event):
-        pass  # Text reagiert standardmäßig auf keine Events
-
 
 class GUIManager:
     def __init__(self):
@@ -89,8 +86,10 @@ class GUIManager:
 
     def draw(self, screen, state):
         for e in self.elements.get(state, []):
-            e.draw(screen)
+            if hasattr(e, "draw"):              #Fragt ab ob eine draw funktion existiert
+                e.draw(screen)
 
     def handle_event(self, event, state):
         for e in self.elements.get(state, []):
-            e.handle_event(event)
+            if hasattr(e, "handle_event"):
+                e.handle_event(event)
