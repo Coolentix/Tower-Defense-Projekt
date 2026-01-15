@@ -36,7 +36,7 @@ class Spiel:
         self.running = True
 
         #Gegner erstellen
-        self.enemy = gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap.map_one())
+        self.enemy = gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap.map_one(), (self.screen_x, self.screen_y))
         self.gui.add_game(self.enemy)
 
         while self.running:
@@ -76,8 +76,10 @@ class Spiel:
 
             self.gui.handle_event(event, self.screen_state)
 
-        
+        self.enemy.update()
+
         self.gui.draw(self.screen, self.screen_state)
+        self.enemy.draw(self.screen)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:

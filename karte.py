@@ -97,6 +97,8 @@ class TileMap:
         for x, y in path:
             self.tilemap[x][y].type = TileType.PATH
 
+        return path
+
     def handle_event(self,event):
         pass
 
