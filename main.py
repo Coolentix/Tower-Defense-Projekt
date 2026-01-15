@@ -13,7 +13,14 @@ class Spiel:
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.screen_x, self.screen_y = self.screen.get_size()
 
-        self.gui = gui.GUIManager()
+        
+        self.MENU = "menu"
+        self.GAME = "game"
+        self.SETTINGS = "setting"
+
+        self.screen_state = self.MENU
+
+        self.gui = gui.GUIManager(self.screen_state)
         #self.gegner = gegener.Gegner()
 
         #Hier Rendern
@@ -25,33 +32,34 @@ class Spiel:
         self.add_menu_button(500,200,"Schließen", start_y + spacing * 2, self.quit_game)
                 
         #Spiel
-        self.tilemap = karte.TileMap(self.screen.get_size())
+        self.tilemap = karte.TileMap(self.screen.get_size(),self.gui)
         self.gui.add_game(self.tilemap)        # Kartenobjekt erzeugen (erst hier weil vorher screen size nicht bekannt)
         self.tilemap.map_one()
+
+        panel_x = self.tilemap.TILE_SIZE * self.tilemap.COLS + 20
+        panel_width = self.screen_x - panel_x
+        button_y = 65
+        gap = 10
+        button_width = (panel_width) // 2 - gap
+        button_height = button_width
+
         self.gui.add_game(gui.Button(x=self.screen_x-60,y=10,width=50,height=50,color=(255, 0, 0),action=self.quit_game))
         self.gui.add_game(gui.Checkbox(x=self.tilemap.TILE_SIZE*self.tilemap.COLS+20,y=10,width=45,height=45,color=(0, 0, 0),state=0,action=self.tilemap.grid_ON_OFF))
-        self.gui.add_game(freund.Freund())
-        self.gui.add_game(freund.Projektil(freund))
+        self.gui.add_game(gui.Button(x=panel_x,y=button_y,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement))
+        self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y,width=button_width,height=button_height,color=(0, 0, 0))) #Hier dann anderer Typ
+        
 
         clock = pygame.time.Clock()
-
-        self.MENU = "menu"
-        self.GAME = "game"
-        self.SETTINGS = "setting"
-
-        self.screen_state = self.GAME
-        
-        #Gegner erstellen
-        self.enemy = gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap.map_one())
-        self.gui.add_game(self.enemy)
 
         self.running = True
 
         #Gegner erstellen
-        self.enemy = gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap.map_one())
-        self.gui.add_game(self.enemy)
+        #self.enemy = gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap.map_one())
+        #self.gui.add_game(self.enemy)
 
         while self.running:
+
+            self.dt = clock.tick(60) / 1000
 
             #Menu Handle:
             if self.screen_state == self.MENU:
@@ -76,8 +84,13 @@ class Spiel:
         self.running = False
         pygame.quit()
 
+    def menu_state(self):
+        self.screen_state = self.MENU
+        self.gui.set_state(self.screen_state)
+
     def game_state(self):
         self.screen_state = self.GAME
+        self.gui.set_state(self.screen_state)
 
     def settings_state(self):
         self.screen_state = self.SETTINGS
@@ -85,22 +98,18 @@ class Spiel:
     def menu(self):
         self.screen.fill((255,255,255))
 
-        #self.start_button.draw(self.screen)
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
 
-            self.gui.handle_event(event, self.screen_state)
+            self.gui.handle_event(event)
 
         
-        self.gui.draw(self.screen, self.screen_state)
+        self.gui.draw(self.screen)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
-            self.screen_state = self.GAME
-        #if keys[pygame.K_ESCAPE]:
-            #self.running = False
+            self.game_state()
 
 
     def game(self):
@@ -115,13 +124,13 @@ class Spiel:
             if event.type == pygame.QUIT:
                 self.running = False
 
-            self.gui.handle_event(event, self.screen_state)
+            self.gui.handle_event(event)
 
         
-        self.gui.draw(self.screen, self.screen_state)
-        for enemies in self.gui.elements:
-            if self.gui.elements[enemies] == gegner.Gegner:
-                enemies.update()
+        self.gui.draw(self.screen)
+        self.gui.update(self.dt)
+        #for f in self.tilemap.friends:
+        #    f.update(self.dt)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
@@ -136,14 +145,14 @@ class Spiel:
             if event.type == pygame.QUIT:
                 self.running = False
 
-            self.gui.handle_event(event, self.screen_state)
+            self.gui.handle_event(event)
 
         
-        self.gui.draw(self.screen, self.screen_state)
+        self.gui.draw(self.screen)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
-            self.screen_state = self.MENU
+            self.menu_state()
 
     def add_menu_button(self, width, height, text, y, action):
         BUTTON_W, BUTTON_H = width, height
@@ -152,11 +161,8 @@ class Spiel:
 
         self.gui.add_menu(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text,font_size=100,color=(255, 255, 255),center=True))
 
-# Hier die Klassen
-
-# jeweils in einzählne Dateien für übersichtlichkeit?
-class Projektil:
-    pass
+    def enable_friend_placement(self):
+        self.gui.placing_friend = True
 
 class Kauf:
     pass

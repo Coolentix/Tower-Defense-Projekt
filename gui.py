@@ -8,7 +8,7 @@ class GUIElement:
         pass
 
 class Button(GUIElement):
-    def __init__(self, x, y, width, height, color, action):
+    def __init__(self, x, y, width, height, color, action=None):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
         self.action = action
@@ -21,7 +21,8 @@ class Button(GUIElement):
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
-                self.action()
+                if self.action:
+                    self.action()
 
 #Funktioniert
 class Checkbox(GUIElement):
@@ -75,8 +76,13 @@ class Text(GUIElement):
 
 
 class GUIManager:
-    def __init__(self):
+    def __init__(self,screen_state):
         self.elements = {"menu": [],"game": []}
+        self.state = screen_state
+        self.placing_friend = False
+
+    def set_state(self, state):
+        self.state = state
 
     def add_game(self, element):
         self.elements["game"].append(element)
@@ -84,12 +90,17 @@ class GUIManager:
     def add_menu(self, element):
         self.elements["menu"].append(element)
 
-    def draw(self, screen, state):
-        for e in self.elements.get(state, []):
+    def draw(self, screen):
+        for e in self.elements.get(self.state, []):
             if hasattr(e, "draw"):              #Fragt ab ob eine draw funktion existiert
                 e.draw(screen)
 
-    def handle_event(self, event, state):
-        for e in self.elements.get(state, []):
+    def update(self,delta_time):
+        for e in self.elements.get(self.state, []):
+            if hasattr(e, "update"):              #Fragt ab ob eine update funktion existiert
+                e.update(delta_time)
+
+    def handle_event(self, event):
+        for e in self.elements.get(self.state, []):
             if hasattr(e, "handle_event"):
                 e.handle_event(event)

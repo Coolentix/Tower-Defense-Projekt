@@ -2,7 +2,7 @@ import pygame
 import freund
 
 class TileMap:
-    def __init__(self,screen_size):
+    def __init__(self,screen_size,gui):
         self.ROWS = 10                                      #Spalten
         self.COLS = 14                                    #Zeilen
         self.screen_x, self.screen_y = screen_size          #Bildschirm göße errechnen
@@ -12,6 +12,8 @@ class TileMap:
         self.tile_color = (255,255,255)
         self.tile_type = TileType.EMPTY
         self.grid_active = False
+        #self.friends = []
+        self.gui = gui
 
         # Erzeuge eine Tilemap
         self.tilemap = None
@@ -47,11 +49,20 @@ class TileMap:
             pygame.draw.rect(screen, hover_color, tile.rect)
             if tile.type == TileType.PATH:
                 pygame.draw.rect(screen, (255,100,100), tile.rect)
+            if tile.type == TileType.FRIEND:
+                pygame.draw.rect(screen, (100,100,100), tile.rect)
+            if tile.type == TileType.EMPTY and self.gui.placing_friend:
+                pygame.draw.rect(screen, (100,255,100), tile.rect)
                 
 
         # auf Linker Maustasten druck tritt änderung in Kraft
             if pygame.mouse.get_pressed()[0] == 1:
                 if tile.type == 1:
+                    pass
+                elif tile.type == 0 and self.gui.placing_friend:    #Hier später: and self.tile_type == Friend_type_xy
+                    self.place_friend(screen, row, col)
+                    #self.gui.placing_friend = False
+                elif tile.type == 3:
                     pass
                 else:
                     tile.color = self.tile_color
@@ -61,8 +72,9 @@ class TileMap:
                     elif tile.type == 0 and self.grid_active:
                         tile.border = 2
                         tile.color = (0,0,0)
-
+            
         #Je nach Taste ändert was gemalt wird (kann später noch auf Button geäandert werden)
+        """
         if pygame.key.get_pressed()[pygame.K_1]:
             self.tile_color = (0,0,0)
             self.tile_type = 3
@@ -74,6 +86,7 @@ class TileMap:
         if pygame.key.get_pressed()[pygame.K_3]:
             self.tile_color = (255,255,255)
             self.tile_type = 0
+        """
 
     def grid_ON_OFF(self,state):
         self.grid_active = not self.grid_active
@@ -97,8 +110,15 @@ class TileMap:
         for x, y in path:
             self.tilemap[x][y].type = TileType.PATH
 
-    def handle_event(self,event):
-        pass
+    def place_friend(self, screen, row, col):
+        tile = self.tilemap[row][col]
+
+        #Tile Färben
+        tile.type = TileType.FRIEND
+        tile.color = (0, 0, 0)
+        tile.border = 0
+
+        self.gui.add_game(freund.Freund(screen,row,col,(tile.rect.center)))
 
 class TileType:
     EMPTY = 0

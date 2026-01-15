@@ -18,7 +18,7 @@ class Gegner(pygame.sprite.Sprite):
         # Pfad übernehmen
         self.path = path
 
-    def update(self):
+    def update(self,delta_time):
         if not self.path:
             self.kill()
             return
