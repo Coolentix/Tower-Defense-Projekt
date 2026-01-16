@@ -1,7 +1,7 @@
 import pygame
 
 class Gegner(pygame.sprite.Sprite):
-    def __init__(self, enemy_type, path, screen_size, image_path=None):
+    def __init__(self, enemy_type, path, screen_size,image_path=None):
         super().__init__() # Greife auf EnemyType zu
 
         self.enemy_type = enemy_type
@@ -26,10 +26,10 @@ class Gegner(pygame.sprite.Sprite):
         self.COLS = 14                                    #Spalten
         self.screen_x, self.screen_y = screen_size
         self.start_x = 10                                   #Verschiebung X
-        self.start_y = 10     
+        self.start_y = 10  
 
         self.path = [(1,0), (1, 1), (1, 2), (1, 3), (1, 4),(1,5),(1,6),(1,7),(1,8),(1,9),(2,9),(3,9),(3,8),(3,7),(3,6),(3,5),(3,4),(4,4),(5,4),(6,4),(7,4),(8,4),(9,4)]  # Liste der Wegpunkte
-        self.path = path.copy()
+        self.path = self.path.copy()
         self.TILE_SIZE = (self.screen_y-20)//self.ROWS
         spawn_x, spawn_y = self.path.pop(0)
 
@@ -44,20 +44,35 @@ class Gegner(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (self.TILE_SIZE, self.TILE_SIZE))
         self.rect = self.image.get_rect(center=self.rect.center)
 
-    def update(self,delta_time):
+    def update(self, delta_time):
+        # Falls es keinen Pfad mehr gibt (keine Zielpunkte)
         if not self.path:
+            # Entfernt das Objekt aus allen Sprite-Gruppen
             self.kill()
-            return
+            return  # Beendet die update-Methode
 
+        # Aktuelles Ziel aus dem Pfad holen (x- und y-Koordinate)
         target_x, target_y = self.path[0]
-        dx = target_x - self.rect.x
-        dy = target_y - self.rect.y
+
+        # Abstand zum Ziel in x- und y-Richtung berechnen
+        dx = target_x - self.rect.centerx
+        dy = target_y - self.rect.centery
+
+        # Gesamtdistanz zum Ziel berechnen (Pythagoras)
         distance = (dx**2 + dy**2) ** 0.5
 
+        # Prüfen, ob das Ziel in diesem Frame erreicht werden kann
         if distance <= self.speed:
+            # Sprite exakt auf den Zielpunkt setzen
             self.rect.center = (target_x, target_y)
+
+            # Erreichten Punkt aus dem Pfad entfernen
             self.path.pop(0)
+
         else:
+            # Bewegung Richtung Ziel:
+            # dx / distance und dy / distance ergeben den normierten Richtungsvektor
+            # Multiplikation mit speed ergibt die tatsächliche Bewegung
             self.rect.x += self.speed * dx / distance
             self.rect.y += self.speed * dy / distance
 
