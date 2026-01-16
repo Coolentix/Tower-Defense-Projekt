@@ -61,7 +61,7 @@ class TileMap:
                     pass
                 elif tile.type == 0 and self.gui.placing_friend:    #Hier später: and self.tile_type == Friend_type_xy
                     self.place_friend(screen, row, col)
-                    #self.gui.placing_friend = False
+                    self.gui.placing_friend = False
                 elif tile.type == 3:
                     pass
                 else:
@@ -70,7 +70,7 @@ class TileMap:
                     if tile.type != 0:
                         tile.border = False
                     elif tile.type == 0 and self.grid_active:
-                        tile.border = 2
+                        tile.border = 1
                         tile.color = (0,0,0)
             
         #Je nach Taste ändert was gemalt wird (kann später noch auf Button geäandert werden)
@@ -94,7 +94,7 @@ class TileMap:
             for col in range(self.COLS):
                 if self.tilemap[row][col].type == TileType.EMPTY:
                     if state:
-                        self.tilemap[row][col].border = 2
+                        self.tilemap[row][col].border = 1
                         self.tilemap[row][col].color = (0,0,0)
                     else: 
                         self.tilemap[row][col].border = 0

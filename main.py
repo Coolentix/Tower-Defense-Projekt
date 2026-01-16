@@ -37,6 +37,7 @@ class Spiel:
         self.tilemap.map_one()
 
         panel_x = self.tilemap.TILE_SIZE * self.tilemap.COLS + 20
+        panel_y = self.tilemap.TILE_SIZE * self.tilemap.ROWS + 20
         panel_width = self.screen_x - panel_x
         button_y = 65
         gap = 10
@@ -47,18 +48,16 @@ class Spiel:
         self.gui.add_game(gui.Checkbox(x=self.tilemap.TILE_SIZE*self.tilemap.COLS+20,y=10,width=45,height=45,color=(0, 0, 0),state=0,action=self.tilemap.grid_ON_OFF))
         self.gui.add_game(gui.Button(x=panel_x,y=button_y,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement))
         self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y,width=button_width,height=button_height,color=(0, 0, 0))) #Hier dann anderer Typ
+        self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=panel_y-button_height-gap,width=button_width,height=button_height,color=(0, 0, 0),action=self.spawn_enemy)) #Hier dann anderer Typ
         
 
         clock = pygame.time.Clock()
 
         self.running = True
 
-        #Gegner erstellen
-        self.gui.add_game(gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap.map_one(), (self.screen_x, self.screen_y)))
-
         while self.running:
 
-            self.dt = clock.tick(60) / 1000
+            self.dt = clock.tick(60)
 
             #Menu Handle:
             if self.screen_state == self.MENU:
@@ -78,7 +77,7 @@ class Spiel:
 
         pygame.quit()
 
-#Definitionen
+#Methoden
     def quit_game(self):
         self.running = False
         pygame.quit()
@@ -90,6 +89,10 @@ class Spiel:
     def game_state(self):
         self.screen_state = self.GAME
         self.gui.set_state(self.screen_state)
+
+    def spawn_enemy(self):
+        #Gegner erstellen
+        self.gui.add_game(gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap))
 
     def settings_state(self):
         self.screen_state = self.SETTINGS

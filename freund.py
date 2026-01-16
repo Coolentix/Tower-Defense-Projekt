@@ -15,6 +15,7 @@ class Freund:
         self.projektile = []
 
     def update(self, dt):
+        dt = dt / 1000  # Sekunden
         # Prüfen, ob genug Zeit vergangen ist, um einen neuen Schuss abzufeuern
         self.letzter_schuss += dt
         if self.letzter_schuss >= self.angriffs_geschwindigkeit:
