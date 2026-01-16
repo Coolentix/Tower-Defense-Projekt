@@ -2,9 +2,9 @@ import pygame
 import freund
 
 class TileMap:
-    def __init__(self,screen_size,gui):
-        self.ROWS = 10                                      #Spalten
-        self.COLS = 14                                    #Zeilen
+    def __init__(self,screen_size,x,y,gui):
+        self.ROWS = x                                      #Spalten
+        self.COLS = y                                    #Zeilen
         self.screen_x, self.screen_y = screen_size          #Bildschirm göße errechnen
         self.TILE_SIZE = (self.screen_y-20)//self.ROWS      #Größe des Tiles
         self.start_x = 10                                   #Verschiebung X
@@ -57,6 +57,7 @@ class TileMap:
 
         # auf Linker Maustasten druck tritt änderung in Kraft
             if pygame.mouse.get_pressed()[0] == 1:
+                #print(row,col)
                 if tile.type == 1:
                     pass
                 elif tile.type == 0 and self.gui.placing_friend:    #Hier später: and self.tile_type == Friend_type_xy
@@ -120,7 +121,7 @@ class TileMap:
         tile.color = (0, 0, 0)
         tile.border = 0
 
-        self.gui.add_game(freund.Freund(screen,row,col,(tile.rect.center)))
+        self.gui.add_game(freund.Freund(screen,row,col,(tile.rect.center),None))
 
 class TileType:
     EMPTY = 0

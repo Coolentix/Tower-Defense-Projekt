@@ -1,4 +1,6 @@
 import pygame
+import freund
+import gegner
 
 class GUIElement:
     def draw(self, screen):
@@ -96,9 +98,19 @@ class GUIManager:
                 e.draw(screen)
 
     def update(self,delta_time):
+        pos_gegner = None
         for e in self.elements.get(self.state, []):
             if hasattr(e, "update"):              #Fragt ab ob eine update funktion existiert
                 e.update(delta_time)
+
+        for e in self.elements.get("game",[]):
+            if isinstance(e, gegner.Gegner):
+                pos_gegner = pygame.math.Vector2(e.rect.center)
+
+        for e in self.elements.get("game",[]):
+            if isinstance(e, freund.Freund) and pos_gegner is not None:
+                e.pos_gegner = pos_gegner
+
 
     def handle_event(self, event):
         for e in self.elements.get(self.state, []):

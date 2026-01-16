@@ -32,7 +32,7 @@ class Spiel:
         self.add_menu_button(500,200,"Schließen", start_y + spacing * 2, self.quit_game)
                 
         #Spiel
-        self.tilemap = karte.TileMap(self.screen.get_size(),self.gui)
+        self.tilemap = karte.TileMap(self.screen.get_size(),2*9,14*2,self.gui)
         self.gui.add_game(self.tilemap)        # Kartenobjekt erzeugen (erst hier weil vorher screen size nicht bekannt)
         self.tilemap.map_one()
 
@@ -44,7 +44,7 @@ class Spiel:
         button_width = (panel_width) // 2 - gap
         button_height = button_width
 
-        self.gui.add_game(gui.Button(x=self.screen_x-60,y=10,width=50,height=50,color=(255, 0, 0),action=self.quit_game))
+        self.gui.add_game(gui.Button(x=self.screen_x-55,y=gap,width=45,height=45,color=(255, 0, 0),action=self.quit_game))
         self.gui.add_game(gui.Checkbox(x=self.tilemap.TILE_SIZE*self.tilemap.COLS+20,y=10,width=45,height=45,color=(0, 0, 0),state=0,action=self.tilemap.grid_ON_OFF))
         self.gui.add_game(gui.Button(x=panel_x,y=button_y,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement))
         self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y,width=button_width,height=button_height,color=(0, 0, 0))) #Hier dann anderer Typ
@@ -92,7 +92,8 @@ class Spiel:
 
     def spawn_enemy(self):
         #Gegner erstellen
-        self.gui.add_game(gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap))
+        erster_gegner = gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap)
+        self.gui.add_game(erster_gegner)
 
     def settings_state(self):
         self.screen_state = self.SETTINGS
@@ -116,9 +117,6 @@ class Spiel:
 
     def game(self):
         self.screen.fill("white")
- 
-        # HIER DAS SPIEL RENDERN
-        #self.tilemap.draw_tilemap(self.screen)
 
         # Ereignisse abfragen
         # Das pygame.QUIT-Event wird ausgelöst, wenn der Benutzer das Fenster über das Schließen-Symbol (X) beendet.

@@ -7,7 +7,7 @@ class Gegner(pygame.sprite.Sprite):
         self.enemy_type = enemy_type
         self.Enemy_Stats = EnemyType.Enemy_Stats[enemy_type]
 
-        self.speed = self.Enemy_Stats["speed"]
+        self.speed = self.Enemy_Stats["speed"]//2
         self.hp = self.Enemy_Stats["health"]
         self.damage = self.Enemy_Stats["damage"]
 
