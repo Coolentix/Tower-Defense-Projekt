@@ -109,6 +109,8 @@ class TileMap:
         # Schleife durch die Koordinaten und Farbe setzen
         for x, y in path:
             self.tilemap[x][y].type = TileType.PATH
+        
+        return path
 
     def place_friend(self, screen, row, col):
         tile = self.tilemap[row][col]
