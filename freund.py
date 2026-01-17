@@ -1,76 +1,80 @@
 import pygame
+import math
 
 class Freund:
-    def __init__(self, screen, row, col, position, pos_gegner):
-        self.schaden = 0
-        self.rasse = ""
-        self.reichweite = 0
-        self.angriffs_geschwindigkeit = 0.5
-        self.row, self.col = row, col
-        self.screen = screen
-        self.pos_gegner = pos_gegner
+    def __init__(self, row, col, position):
+        self.row = row
+        self.col = col
+        self.pos = pygame.math.Vector2(position)
 
-       # if self.pos_gegner:
-       #     self.pos_gegner_x, self.pos_gegner_y = pos_gegner
+        self.range = 500
+        self.fire_rate = 500     # Sekunden
+        self.timer = 0
 
-        # Pixelposition (wird später gesetzt)
-        self.x , self.y = position
-        self.letzter_schuss = 0
-        self.projektile = []
+        self.target = None
+        self.projectiles = []
 
-    def update(self, dt):
-        dt = dt / 1000  # Sekunden
-        # Prüfen, ob genug Zeit vergangen ist, um einen neuen Schuss abzufeuern
-        self.letzter_schuss += dt
-        if self.letzter_schuss >= self.angriffs_geschwindigkeit:
-            self.letzter_schuss = 0
-            self.schuß()
+    def update(self, dt, gegner_liste):
+        self.timer += dt
 
-        # Projektile aktualisieren
-        for p in self.projektile:
+        # Ziel suchen, falls keins da ist oder tot
+        if not self.target or not self.target.alive:
+            self.target = self.find_target(gegner_liste)
+
+        # Schießen
+        if self.target and self.timer >= self.fire_rate:
+            self.timer = 0
+            self.shoot()
+
+        # Projektile updaten
+        for p in self.projectiles[:]:
             p.update(dt)
-            p.draw(self.screen)
+            if not p.alive:
+                self.projectiles.remove(p)
 
-    def schuß(self):
-        p = Projektil(self.x, self.y,self.pos_gegner)
-        self.projektile.append(p)
+    def find_target(self, gegner_liste):
+        for g in gegner_liste:
+            if not g.alive:
+                continue
+            if self.pos.distance_to(g.rect.center) <= self.range:
+                return g
+        return None
 
-class Projektil(pygame.sprite.Sprite):
-    def __init__(self,x,y,gegner):
-        super().__init__()
-        self.image = pygame.Surface((30, 30), pygame.SRCALPHA)
-        pygame.draw.circle(self.image, (255, 0, 0), (15, 15), 15)
-        self.rect = self.image.get_rect(center=(x,y))
-        self.speed = 5
-        self.pos = pygame.math.Vector2(self.rect.center)
-        if gegner:
-            self.ziel_x, self.ziel_y = gegner
-            self.target = pygame.math.Vector2(self.ziel_x, self.ziel_y)
-        else:
-            self.target = pygame.math.Vector2(5,5)
-
-    def update(self,delta_time):
-        delta_time = delta_time*1000
-        # Ziel erreicht?
-        direction = self.target - self.pos
-        distance = direction.length()
-
-        if distance == 0:
-            self.kill()
-            return
-
-        # Reicht die Bewegung dieses Frames aus?
-        step = self.speed * delta_time
-
-        if distance <= step:
-            self.pos = self.target
-            self.rect.center = self.pos
-            self.kill()  # oder: Ziel erreicht
-        else:
-            direction = direction.normalize()
-            self.pos += direction * step
-            self.rect.center = self.pos
+    def shoot(self):
+        p = Projektil(self.pos.x, self.pos.y, self.target)
+        self.projectiles.append(p)
 
     def draw(self,screen):
-        screen.blit(self.image, self.rect)
+        pygame.draw.circle(screen, (50, 200, 50), self.pos, 15)
+        pygame.draw.circle(screen, (50, 100, 50), self.pos, self.range, 1)
+
+        for p in self.projectiles:
+            p.draw(screen)
+
+class Projektil:
+    def __init__(self, x, y, ziel_gegner):
+        self.pos = pygame.math.Vector2(x, y)
+        self.ziel = ziel_gegner      # Gegner-OBJEKT, keine Position
+        self.speed = 1             # Pixel pro Sekunde
+        self.radius = 10
+        self.alive = True
+
+    def update(self, dt):
+        if not self.ziel or not self.ziel.alive:
+            self.alive = False
+            return
+
+        ziel_pos = pygame.math.Vector2(self.ziel.rect.center)
+        richtung = ziel_pos - self.pos
+
+        if richtung.length() < 5:    # Treffer
+            #self.ziel.take_damage(1)
+            self.alive = False
+            return
+
+        richtung = richtung.normalize()
+        self.pos += richtung * self.speed * dt
+
+    def draw(self,screen):
+        pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
 

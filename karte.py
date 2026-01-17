@@ -61,7 +61,7 @@ class TileMap:
                 if tile.type == 1:
                     pass
                 elif tile.type == 0 and self.gui.placing_friend:    #Hier später: and self.tile_type == Friend_type_xy
-                    self.place_friend(screen, row, col)
+                    self.place_friend(row, col)
                     self.gui.placing_friend = False
                 elif tile.type == 3:
                     pass
@@ -113,7 +113,7 @@ class TileMap:
         
         return path
 
-    def place_friend(self, screen, row, col):
+    def place_friend(self, row, col):
         tile = self.tilemap[row][col]
 
         #Tile Färben
@@ -121,7 +121,7 @@ class TileMap:
         tile.color = (0, 0, 0)
         tile.border = 0
 
-        self.gui.add_game(freund.Freund(screen,row,col,(tile.rect.center),None))
+        self.gui.add_game(freund.Freund(row,col,(tile.rect.center)))
 
 class TileType:
     EMPTY = 0

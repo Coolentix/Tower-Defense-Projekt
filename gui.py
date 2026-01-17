@@ -83,6 +83,8 @@ class GUIManager:
         self.state = screen_state
         self.placing_friend = False
 
+        self.gegner_list = []
+
     def set_state(self, state):
         self.state = state
 
@@ -98,18 +100,20 @@ class GUIManager:
                 e.draw(screen)
 
     def update(self,delta_time):
-        pos_gegner = None
         for e in self.elements.get("game",[]):
             if isinstance(e, gegner.Gegner):
-                pos_gegner = pygame.math.Vector2(e.rect.center)
-
-        for e in self.elements.get("game",[]):
-            if isinstance(e, freund.Freund) and pos_gegner is not None:
-                e.pos_gegner = pos_gegner
+                self.gegner_list.append(e)
 
         for e in self.elements.get(self.state, []):
             if hasattr(e, "update"):              #Fragt ab ob eine update funktion existiert
-                e.update(delta_time)
+                if isinstance(e, freund.Freund):
+                    e.update(delta_time,self.gegner_list)
+                elif isinstance(e, gegner.Gegner) and not e.update(delta_time):
+                    self.gegner_list.remove(e)
+                    self.elements["game"].remove(e)
+                else:
+                    e.update(delta_time)
+
 
     def handle_event(self, event):
         for e in self.elements.get(self.state, []):

@@ -48,7 +48,8 @@ class Gegner(pygame.sprite.Sprite):
     def update(self, delta_time):
         if not self.path:
             self.kill()
-            return
+            return False
+        
 
         # Aktuelles Ziel
         row, col = self.path[0]
@@ -78,6 +79,8 @@ class Gegner(pygame.sprite.Sprite):
             direction = direction.normalize()
             position += direction * self.speed * delta_time
             self.rect.center = position
+        
+        return True
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
