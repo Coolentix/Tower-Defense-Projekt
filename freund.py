@@ -9,7 +9,6 @@ class Freund:
 
         self.range = 500
         self.fire_rate = 500     # Sekunden
-        self.timer = 0
 
         self.target = None
         self.projectiles = []
@@ -23,7 +22,6 @@ class Freund:
 
         # Schießen
         if self.target and self.timer >= self.fire_rate:
-            self.timer = 0
             self.shoot()
 
         # Projektile updaten
