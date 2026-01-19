@@ -25,11 +25,11 @@ class Spiel:
 
         #Hier Rendern
         #Menu
-        start_y = self.screen_y // 2 - 320
-        spacing = 220
-        self.add_menu_button(500,200,"Spielen", start_y, self.game_state)
-        self.add_menu_button(500,200,"Einstellungen", start_y + spacing, self.settings_state)
-        self.add_menu_button(500,200,"Schließen", start_y + spacing * 2, self.quit_game)
+        start_y = self.screen_y // 2
+        spacing = 110
+        self.add_menu_button(500,100,"Spielen", start_y, self.game_state)
+        self.add_menu_button(500,100,"Einstellungen", start_y + spacing, self.settings_state)
+        self.add_menu_button(500,100,"Schließen", start_y + spacing * 2, self.quit_game)
                 
         #Spiel
         self.tilemap = karte.TileMap(self.screen.get_size(),2*9,14*2,self.gui)
@@ -99,7 +99,16 @@ class Spiel:
         self.screen_state = self.SETTINGS
 
     def menu(self):
-        self.screen.fill((255,255,255))
+        #self.screen.fill("white")
+        """
+        self.image = pygame.image.load("../Tower-Defense-Projekt/image.png").convert_alpha()
+
+        width = self.image.get_width()
+        height = self.image.get_height()
+
+        self.image = pygame.transform.scale(self.image, (width // 2, height // 2))
+        self.rect = self.image.get_rect(center=(self.screen_x // 2, self.screen_y // 2))
+        """
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -107,6 +116,19 @@ class Spiel:
 
             self.gui.handle_event(event)
 
+        #self.image = pygame.image.load("../Tower-Defense-Projekt/image.png").convert_alpha()
+        #self.image = pygame.transform.scale(self.image, (64, 64))
+        #self.rect = self.image.get_rect(center=(self.screen_x // 2, self.screen_y // 2))
+
+        self.image = pygame.Surface((30, 30))
+        self.image.fill((255, 0, 0))
+        self.rect = self.image.get_rect()
+
+        self.image = pygame.image.load("../Tower-Defense-Projekt/image.png").convert_alpha()
+        width = self.image.get_width()
+        height = self.image.get_height()
+        self.image = pygame.transform.scale(self.image, (width // 2, height // 2))
+        self.rect = self.image.get_rect(center=(self.screen_x // 2, self.screen_y // 2))
         
         self.gui.draw(self.screen)
 
@@ -153,9 +175,9 @@ class Spiel:
     def add_menu_button(self, width, height, text, y, action):
         BUTTON_W, BUTTON_H = width, height
 
-        self.gui.add_menu(gui.Button(x=self.screen_x // 2 - BUTTON_W // 2,y=y,width=BUTTON_W,height=BUTTON_H,color=(0, 0, 0),action=action))
+        self.gui.add_menu(gui.Button(x=20 ,y=y,width=BUTTON_W,height=BUTTON_H,color=(0, 0, 0),action=action)) #self.screen_x // 2 - BUTTON_W // 2
 
-        self.gui.add_menu(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text,font_size=100,color=(255, 255, 255),center=True))
+        self.gui.add_menu(gui.Text(x=BUTTON_W//2 + 20,y=y + BUTTON_H // 2,text=text,font_size=75,color=(255, 255, 255),center=True))    #self.screen_x // 2
 
     def enable_friend_placement(self):
         self.gui.placing_friend = True
