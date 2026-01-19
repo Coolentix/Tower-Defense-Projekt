@@ -1,7 +1,7 @@
 import pygame
 
 class Gegner(pygame.sprite.Sprite):
-    def __init__(self, enemy_type, map, image_path=None):
+    def __init__(self, enemy_type, map, map_path,image_path=None):
         super().__init__() # Greife auf EnemyType zu
 
         self.enemy_type = enemy_type
@@ -29,7 +29,7 @@ class Gegner(pygame.sprite.Sprite):
         self.start_x = map.start_x                                   #Verschiebung X
         self.start_y = map.start_y
 
-        self.path = [(1,0), (1, 1), (1, 2), (1, 3), (1, 4),(1,5),(1,6),(1,7),(1,8),(1,9),(2,9),(3,9),(3,8),(3,7),(3,6),(3,5),(3,4),(4,4),(5,4),(6,4),(7,4),(8,4),(9,4)]  # Liste der Wegpunkte
+        self.path = map_path  # Liste der Wegpunkte
         self.path = self.path.copy()
         self.TILE_SIZE = (self.screen_y-20)//self.ROWS
         spawn_x, spawn_y = self.path.pop(0)

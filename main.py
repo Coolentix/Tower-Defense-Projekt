@@ -92,7 +92,7 @@ class Spiel:
 
     def spawn_enemy(self):
         #Gegner erstellen
-        erster_gegner = gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap)
+        erster_gegner = gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap,self.tilemap.map_one())
         self.gui.add_game(erster_gegner)
 
     def settings_state(self):
