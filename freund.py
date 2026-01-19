@@ -7,9 +7,12 @@ class Freund:
         self.col = col
         self.pos = pygame.math.Vector2(position)
 
-        self.range = 500
-        self.fire_rate = 500     # Sekunden
-        self.timer = 0
+        self.freund_type = freund_type
+        self.freund_Stats = freund_Type.freund_Stats[freund_type]
+
+        self.range = self.freund_Stats_Stats["range"]//2
+        self.fire_rate = self.freund_Stats["fire_rate"]
+        self.damage = self.freund_Stats["damage"]
 
         self.target = None
         self.projectiles = []
@@ -75,6 +78,16 @@ class Projektil:
         richtung = richtung.normalize()
         self.pos += richtung * self.speed * dt
 
+class freund_Type:
+    SNIPER = 0
+    MAGIER = 1
+    SPAMMER = 2
+
+    Freund_Stats = {
+        SNIPER: {"range": 500, "damage": 2, "fire_rate": 5, "kosten": 100},
+        MAGIER: {"range": 7, "damage": 4, "fire_rate": 8, "kosten": 100},
+        SPAMMER: {"range": 20, "damage": 1, "fire_rate": 20, "kosten": 100},
+    }
     def draw(self,screen):
         pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
 
