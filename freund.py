@@ -10,11 +10,13 @@ class Freund:
         self.range = 500
         self.fire_rate = 500     # Sekunden
 
+        self.timer = 0
+
         self.target = None
         self.projectiles = []
 
     def update(self, dt, gegner_liste):
-        self.timer += dt
+        self.timer = dt
 
         # Ziel suchen, falls keins da ist oder tot
         if not self.target or not self.target.alive:

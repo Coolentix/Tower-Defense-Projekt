@@ -129,8 +129,6 @@ class Spiel:
         
         self.gui.draw(self.screen)
         self.gui.update(self.dt)
-        #for f in self.tilemap.friends:
-        #    f.update(self.dt)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
@@ -138,8 +136,6 @@ class Spiel:
 
     def settings(self):
         self.screen.fill((255,255,255))
-
-        #self.start_button.draw(self.screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
