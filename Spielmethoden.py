@@ -15,12 +15,11 @@ class GameManager:
         self.passive_income_interval = 5.0 # Alle 5 Sekunden Geld
         self.passive_income_amount = 10    # 10 Geld pro Intervall
 
-    # ---------------------------------------------------------
     # 1. GELD (Money)
     # Methoden: Geld steigerung (durch Gegner oder Zeit)
-    # ---------------------------------------------------------
+
     def add_money(self, amount):
-        """Fügt Geld hinzu (z.B. wenn Gegner stirbt)."""
+        """Fügt Geld hinzu (wenn Gegner stirbt)"""
         self.money += amount
         print(f"Geld erhalten: +{amount}. Aktuell: {self.money}")
 
@@ -41,10 +40,8 @@ class GameManager:
             self.add_money(self.passive_income_amount)
             self.last_passive_income_time = current_time
 
-    # ---------------------------------------------------------
     # 2. LEBEN (Lives)
     # Methoden: Leben verwalten
-    # ---------------------------------------------------------
     def take_damage(self, amount=1):
         """Zieht Leben ab, wenn ein Gegner durchkommt."""
         self.lives -= amount
@@ -56,25 +53,23 @@ class GameManager:
     def game_over(self):
         """Logik für das Spielende."""
         print("GAME OVER - Keine Leben mehr!")
-        # Hier könntest du das Spiel stoppen oder ein Menü aufrufen
+        #Spielstop 
         
-    # ---------------------------------------------------------
     # 3. SCORE
     # Denkansatz: Überzeit? Oder durch Kills?
-    # ---------------------------------------------------------
+
     def add_score(self, points):
         """Erhöht den Score (z.B. durch Kill)."""
         self.score += points
 
     def update_score_over_time(self):
         """Optional: Gibt Punkte für jede überlebte Sekunde."""
-        # Das kann man in der Loop aufrufen, z.B. +1 Punkt pro Sekunde
+        # Loop möglich in Hauptspiel-Loop
         self.score += 1
 
-    # ---------------------------------------------------------
     # 4. ZEIT (Timer)
     # Methoden: Timer anzeigen
-    # ---------------------------------------------------------
+
     def get_play_time(self):
         """Gibt die gespielte Zeit in Sekunden zurück."""
         return int(time.time() - self.start_time)
