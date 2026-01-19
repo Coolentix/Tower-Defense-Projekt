@@ -39,27 +39,45 @@ class Gegner(pygame.sprite.Sprite):
         self.start_y + spawn_x * self.TILE_SIZE + self.TILE_SIZE // 2   # vertikal Mitte des Tiles
     ))
 
-        #self.image = pygame.image.load("/Users/wilson/Downloads/pixil-frame-0.png").convert_alpha()
+        self.image = pygame.image.load("/Users/wilson/Downloads/pixil-frame-0.png").convert_alpha()
         # Optional: auf die Tile-Größe skalieren
         self.image = pygame.transform.scale(self.image, (self.TILE_SIZE, self.TILE_SIZE))
         self.rect = self.image.get_rect(center=self.rect.center)
-
+    
     def update(self,delta_time):
         if not self.path:
-            self.kill()
+            self.kill()  # Entferne den Gegner, wenn der Pfad beendet ist
+            return False
+        
+        # Aktuelles Ziel         
+        row, col = self.path[0]
+        target = pygame.math.Vector2(
+        self.start_x + col * self.TILE_SIZE + self.TILE_SIZE // 2,
+        self.start_y + row * self.TILE_SIZE + self.TILE_SIZE // 2
+        )
+
+        # Aktuelle Position (als Vector2!)
+        position = pygame.math.Vector2(self.rect.center)
+        
+        # Richtungsvektor zum Ziel
+        direction = target - position
+        distance = direction.length()
+
+        if distance == 0:             
+            self.path.pop(0)             
             return
 
-        target_x, target_y = self.path[0]
-        dx = target_x - self.rect.x
-        dy = target_y - self.rect.y
-        distance = (dx**2 + dy**2) ** 0.5
-
-        if distance <= self.speed:
-            self.rect.center = (target_x, target_y)
+        # Ziel in diesem Frame erreichbar?
+        if distance <= self.speed * delta_time:
+            self.rect.center = target
             self.path.pop(0)
         else:
-            self.rect.x += self.speed * dx / distance
-            self.rect.y += self.speed * dy / distance
+            # Normieren + Bewegung
+            direction = direction.normalize()
+            position += direction * self.speed * delta_time
+            self.rect.center = position
+
+        return True
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
