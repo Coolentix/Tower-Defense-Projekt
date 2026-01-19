@@ -1,9 +1,10 @@
 import pygame
+import freund
 
 class TileMap:
-    def __init__(self,screen_size):
-        self.ROWS = 10                                      #Spalten
-        self.COLS = 14                                    #Zeilen
+    def __init__(self,screen_size,x,y,gui):
+        self.ROWS = x                                      #Spalten
+        self.COLS = y                                    #Zeilen
         self.screen_x, self.screen_y = screen_size          #Bildschirm göße errechnen
         self.TILE_SIZE = (self.screen_y-20)//self.ROWS      #Größe des Tiles
         self.start_x = 10                                   #Verschiebung X
@@ -11,18 +12,19 @@ class TileMap:
         self.tile_color = (255,255,255)
         self.tile_type = TileType.EMPTY
         self.grid_active = False
+        #self.friends = []
+        self.gui = gui
 
         # Erzeuge eine Tilemap
         self.tilemap = None
         self.empty_map()
         
-    def draw_tilemap(self,screen):
+    def draw(self,screen):
         for row in range(self.ROWS):
             for col in range(self.COLS):
                 self.tilemap[row][col].draw(screen)
-
-                # schwarze Linie (Grid)
-                #pygame.draw.rect(screen, (0, 0, 0), rect, 1)    #zeichnet schwarze umrandung
+        
+        #zeichnet schwarze umrandung
 
         pygame.draw.line(screen, (0, 0, 0), (self.start_x, self.start_y), 
                                             (self.start_x, self.start_y + self.ROWS*self.TILE_SIZE), 2) #Karten Rand Links
@@ -47,19 +49,33 @@ class TileMap:
             pygame.draw.rect(screen, hover_color, tile.rect)
             if tile.type == TileType.PATH:
                 pygame.draw.rect(screen, (255,100,100), tile.rect)
+            if tile.type == TileType.FRIEND:
+                pygame.draw.rect(screen, (100,100,100), tile.rect)
+            if tile.type == TileType.EMPTY and self.gui.placing_friend:
+                pygame.draw.rect(screen, (100,255,100), tile.rect)
                 
 
         # auf Linker Maustasten druck tritt änderung in Kraft
             if pygame.mouse.get_pressed()[0] == 1:
-                tile.color = self.tile_color
-                tile.type = self.tile_type
-                if tile.type != 0:
-                    tile.border = False
-                elif tile.type == 0 and self.grid_active:
-                    tile.border = 2
-                    tile.color = (0,0,0)
-
+                #print(row,col)
+                if tile.type == 1:
+                    pass
+                elif tile.type == 0 and self.gui.placing_friend:    #Hier später: and self.tile_type == Friend_type_xy
+                    self.place_friend(row, col)
+                    self.gui.placing_friend = False
+                elif tile.type == 3:
+                    pass
+                else:
+                    tile.color = self.tile_color
+                    tile.type = self.tile_type
+                    if tile.type != 0:
+                        tile.border = False
+                    elif tile.type == 0 and self.grid_active:
+                        tile.border = 1
+                        tile.color = (0,0,0)
+            
         #Je nach Taste ändert was gemalt wird (kann später noch auf Button geäandert werden)
+        """
         if pygame.key.get_pressed()[pygame.K_1]:
             self.tile_color = (0,0,0)
             self.tile_type = 3
@@ -71,6 +87,7 @@ class TileMap:
         if pygame.key.get_pressed()[pygame.K_3]:
             self.tile_color = (255,255,255)
             self.tile_type = 0
+        """
 
     def grid_ON_OFF(self,state):
         self.grid_active = not self.grid_active
@@ -78,7 +95,7 @@ class TileMap:
             for col in range(self.COLS):
                 if self.tilemap[row][col].type == TileType.EMPTY:
                     if state:
-                        self.tilemap[row][col].border = 2
+                        self.tilemap[row][col].border = 1
                         self.tilemap[row][col].color = (0,0,0)
                     else: 
                         self.tilemap[row][col].border = 0
@@ -93,6 +110,18 @@ class TileMap:
         # Schleife durch die Koordinaten und Farbe setzen
         for x, y in path:
             self.tilemap[x][y].type = TileType.PATH
+        
+        return path
+
+    def place_friend(self, row, col):
+        tile = self.tilemap[row][col]
+
+        #Tile Färben
+        tile.type = TileType.FRIEND
+        tile.color = (0, 0, 0)
+        tile.border = 0
+
+        self.gui.add_game(freund.Freund(row,col,(tile.rect.center)))
 
 class TileType:
     EMPTY = 0
