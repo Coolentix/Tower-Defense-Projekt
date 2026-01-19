@@ -55,7 +55,7 @@ class Projektil:
     def __init__(self, x, y, ziel_gegner):
         self.pos = pygame.math.Vector2(x, y)
         self.ziel = ziel_gegner      # Gegner-OBJEKT, keine Position
-        self.speed = 1             # Pixel pro Sekunde
+        self.speed = 5             # Pixel pro Sekunde
         self.radius = 10
         self.alive = True
 
