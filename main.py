@@ -177,7 +177,8 @@ class Spiel:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-
+            if event.type == pygame.KEYDOWN:
+                self.menu_state()
             self.gui.handle_event(event)
 
         
