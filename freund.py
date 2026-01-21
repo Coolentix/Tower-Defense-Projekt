@@ -2,7 +2,7 @@ import pygame
 import math
 
 class Freund:
-    def __init__(self, row, col, position):
+    def __init__(self, row, col, position, freund_type):
         self.row = row
         self.col = col
         self.pos = pygame.math.Vector2(position)
