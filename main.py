@@ -116,14 +116,6 @@ class Spiel:
 
             self.gui.handle_event(event)
 
-        #self.image = pygame.image.load("../Tower-Defense-Projekt/image.png").convert_alpha()
-        #self.image = pygame.transform.scale(self.image, (64, 64))
-        #self.rect = self.image.get_rect(center=(self.screen_x // 2, self.screen_y // 2))
-
-        #self.image = self.screen
-        #self.image.fill((255, 0, 0))
-        #self.rect = self.image.get_rect()
-
         self.image = pygame.image.load("../Tower-Defense-Projekt/image.png").convert_alpha()
         width = self.image.get_width()
         height = self.image.get_height()
@@ -176,7 +168,7 @@ class Spiel:
     def add_menu_button(self, width, height, text, y, action):
         BUTTON_W, BUTTON_H = width, height
 
-        self.gui.add_menu(gui.Button(x=20 ,y=y,width=BUTTON_W,height=BUTTON_H,color=(0, 0, 0),action=action)) #self.screen_x // 2 - BUTTON_W // 2
+        self.gui.add_menu(gui.Button(x=20 ,y=y,width=BUTTON_W,height=BUTTON_H,color=(0, 0, 0),alpha=0,action=action)) #self.screen_x // 2 - BUTTON_W // 2
 
         self.gui.add_menu(gui.Text(x=BUTTON_W//2 + 20,y=y + BUTTON_H // 2,text=text,font_size=75,color=(255, 255, 255),center=True))    #self.screen_x // 2
 

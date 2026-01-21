@@ -10,15 +10,33 @@ class GUIElement:
         pass
 
 class Button(GUIElement):
-    def __init__(self, x, y, width, height, color, action=None):
+    def __init__(self, x, y, width, height, color, alpha=255, action=None):
         self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
+        self.color = color  # RGB
+        self.alpha = alpha
         self.action = action
+
+        # Transparente Surface
+        self.surface = pygame.Surface((width, height), pygame.SRCALPHA)
 
     def draw(self, screen):
         mouse_pos = pygame.mouse.get_pos()
-        color = (min(self.color[0] + 100, 255),min(self.color[1] + 100, 255),min(self.color[2] + 100, 255)) if self.rect.collidepoint(mouse_pos) else self.color
-        pygame.draw.rect(screen, color, self.rect)
+
+        # Hover-Farbe
+        if self.rect.collidepoint(mouse_pos):
+            color = (
+                min(self.color[0] + 100, 255),
+                min(self.color[1] + 100, 255),
+                min(self.color[2] + 100, 255),
+                255
+            )
+        else:
+            color = (*self.color, self.alpha)
+
+        self.surface.fill((0, 0, 0, 0))  # komplett transparent
+        pygame.draw.rect(self.surface, color, self.surface.get_rect())
+
+        screen.blit(self.surface, self.rect.topleft)
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
