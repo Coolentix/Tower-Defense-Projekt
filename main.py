@@ -120,15 +120,16 @@ class Spiel:
         #self.image = pygame.transform.scale(self.image, (64, 64))
         #self.rect = self.image.get_rect(center=(self.screen_x // 2, self.screen_y // 2))
 
-        self.image = pygame.Surface((30, 30))
-        self.image.fill((255, 0, 0))
-        self.rect = self.image.get_rect()
+        #self.image = self.screen
+        #self.image.fill((255, 0, 0))
+        #self.rect = self.image.get_rect()
 
         self.image = pygame.image.load("../Tower-Defense-Projekt/image.png").convert_alpha()
         width = self.image.get_width()
         height = self.image.get_height()
-        self.image = pygame.transform.scale(self.image, (width // 2, height // 2))
+        self.image = pygame.transform.scale(self.image, (self.screen_x,self.screen_y))
         self.rect = self.image.get_rect(center=(self.screen_x // 2, self.screen_y // 2))
+        self.screen.blit(self.image, self.rect)
         
         self.gui.draw(self.screen)
 
