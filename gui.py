@@ -1,16 +1,17 @@
 import pygame
-import freund
 import gegner
+import freund
 
 class GUIElement:
     def draw(self, screen):
         pass
 
-    def handle_event(self, event):
+    def update(self, delta_time):
         pass
 
-class Button(GUIElement):
-    def __init__(self, x, y, width, height, color, alpha=255, action=None):
+
+class Button:
+    def __init__(self, x, y, width, height, color, action):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color  # RGB
         self.alpha = alpha
@@ -21,31 +22,16 @@ class Button(GUIElement):
 
     def draw(self, screen):
         mouse_pos = pygame.mouse.get_pos()
-
-        # Hover-Farbe
-        if self.rect.collidepoint(mouse_pos):
-            color = (
-                min(self.color[0] + 100, 255),
-                min(self.color[1] + 100, 255),
-                min(self.color[2] + 100, 255),
-                255
-            )
-        else:
-            color = (*self.color, self.alpha)
-
-        self.surface.fill((0, 0, 0, 0))  # komplett transparent
-        pygame.draw.rect(self.surface, color, self.surface.get_rect())
-
-        screen.blit(self.surface, self.rect.topleft)
+        color = (150, 0, 0) if self.rect.collidepoint(mouse_pos) else self.color
+        pygame.draw.rect(screen, color, self.rect)
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
-                if self.action:
-                    self.action()
+                self.action()
 
-#Funktioniert
-class Checkbox(GUIElement):
+
+class Checkbox:
     def __init__(self, x, y, width, height, color,state,action):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
@@ -62,78 +48,75 @@ class Checkbox(GUIElement):
     def handle_event(self,event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
-                self.state = not self.state  # Toggle
+                self.state = 1 - self.state  # Toggle
                 self.action(self.state)
 
-class Text(GUIElement):
-    def __init__(self, x, y,text,font_size=24,color=(255, 255, 255),font_path=None,center=False):
-        self.x = x
-        self.y = y
-        self.text = text
-        self.color = color
-        self.center = center
-
-        self.font = pygame.font.Font(font_path, font_size)
-        
-        self.surface = self.font.render(self.text, True, self.color)
-        self.rect = self.surface.get_rect()
-
-        if self.center:
-            self.rect.center = (self.x, self.y)
-        else:
-            self.rect.topleft = (self.x, self.y)
-
-    def set_text(self, new_text):
-        self.text = new_text
-        self._render_text()
-
-    def set_color(self, new_color):
-        self.color = new_color
-        self._render_text()
-
-    def draw(self, screen):
-        screen.blit(self.surface, self.rect)
-
-
-class GUIManager:
-    def __init__(self,screen_state):
-        self.elements = {"menu": [],"game": []}
-        self.state = screen_state
-        self.placing_friend = False
-
-        self.gegner_list = []
-
-    def set_state(self, state):
-        self.state = state
+class GUIManager:     
+    def __init__(self,screen_state):         
+        self.elements = {"menu": [],"game": [], "loadingscreen": []}         
+        self.state = screen_state         
+        self.placing_friend = False           
+        self.gegner_list = []       
+    def set_state(self, state):         
+        self.state = state     
 
     def add_game(self, element):
-        self.elements["game"].append(element)
-    
-    def add_menu(self, element):
-        self.elements["menu"].append(element)
+        self.elements["game"].append(element) 
 
-    def draw(self, screen):
-        for e in self.elements.get(self.state, []):
-            if hasattr(e, "draw"):              #Fragt ab ob eine draw funktion existiert
-                e.draw(screen)
+    def add_menu(self, element):         
+        self.elements["menu"].append(element)  
 
-    def update(self,delta_time):
-        for e in self.elements.get("game",[]):
-            if isinstance(e, gegner.Gegner):
-                self.gegner_list.append(e)
+    def add_loadingscreen(self, element):         
+        self.elements["loadingscreen"].append(element)    
 
-        for e in self.elements.get(self.state, []):
-            if hasattr(e, "update"):              #Fragt ab ob eine update funktion existiert
-                if isinstance(e, freund.Freund):
-                    e.update(delta_time,self.gegner_list)
-                elif isinstance(e, gegner.Gegner) and not e.update(delta_time):
-                    self.gegner_list.remove(e)
-                    self.elements["game"].remove(e)
-                else:
-                    e.update(delta_time)
+    def draw(self, screen):         
+        for e in self.elements.get(self.state, []):             
+            if hasattr(e, "draw"):              
+                #Fragt ab ob eine draw funktion existiert                
+                e.draw(screen)     
 
+    def update(self,delta_time):         
+        for e in self.elements.get("game",[]):             
+                if isinstance(e, gegner.Gegner):                 
+                    self.gegner_list.append(e)           
+        for e in self.elements.get(self.state, []):             
+            if hasattr(e, "update"):              
+                            #Fragt ab ob eine update funktion existiert                 
+                if isinstance(e, freund.Freund):                     
+                            e.update(delta_time)                 
+                elif isinstance(e, gegner.Gegner) and not e.update(delta_time):                     
+                        self.gegner_list.remove(e)                     
+                        self.elements["game"].remove(e)                 
+                else:                     
+                    e.update(delta_time)     
 
-    def handle_event(self, event):
-        for e in self.elements.get(self.state, []):
-            if hasattr(e, "handle_event"):
+    def handle_event(self, event):         
+        for e in self.elements.get(self.state, []):             
+            if hasattr(e, "handle_event"):                 
                 e.handle_event(event)
+
+class Text(GUIElement):     
+    def __init__(self, x, y,text,font_size=24,color=(255, 255, 255),font_path=None,center=False):         
+        self.x = x         
+        self.y = y         
+        self.text = text         
+        self.color = color         
+        self.center = center           
+        self.font = pygame.font.Font(font_path, font_size)                  
+        self.surface = self.font.render(self.text, True, self.color)         
+        self.rect = self.surface.get_rect()           
+        if self.center:             
+            self.rect.center = (self.x, self.y)         
+        else:             
+            self.rect.topleft = (self.x, self.y)       
+
+    def set_text(self, new_text):         
+        self.text = new_text         
+        self._render_text()       
+
+    def set_color(self, new_color):         
+        self.color = new_color         
+        self._render_text()       
+
+    def draw(self, screen):         
+        screen.blit(self.surface, self.rect) 

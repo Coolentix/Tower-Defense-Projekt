@@ -2,10 +2,13 @@ import pygame
 import math
 
 class Freund:
-    def __init__(self, row, col, position):
-        self.row = row
-        self.col = col
-        self.pos = pygame.math.Vector2(position)
+    def __init__(self, screen, row, col, position):
+        self.schaden = 0
+        self.rasse = ""
+        self.reichweite = 0
+        self.angriffs_geschwindigkeit = 500
+        self.row, self.col = row, col
+        self.screen = screen
 
         self.range = 500
         self.fire_rate = 500     # Sekunden
