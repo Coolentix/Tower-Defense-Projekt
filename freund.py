@@ -85,7 +85,7 @@ class freund_type:
     SPAMMER = 2
     DEFAULT = 3
 
-    Freund_Stats = {
+    freund_Stats = {
         SNIPER: {"range": 750, "damage": 2, "fire_rate": 200, "kosten": 400},
         MAGIER: {"range": 400, "damage": 4, "fire_rate": 100, "kosten": 700},
         SPAMMER: {"range": 200, "damage": 1, "fire_rate": 1, "kosten": 600},
