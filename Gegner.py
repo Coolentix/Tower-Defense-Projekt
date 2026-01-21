@@ -1,13 +1,13 @@
 import pygame
 
 class Gegner(pygame.sprite.Sprite):
-    def __init__(self, enemy_type, path, screen_size, image_path=None):
+    def __init__(self, enemy_type, map, path, screen_size, image_path=None):
         super().__init__() # Greife auf EnemyType zu
 
         self.enemy_type = enemy_type
         self.Enemy_Stats = EnemyType.Enemy_Stats[enemy_type]
 
-        self.speed = self.Enemy_Stats["speed"]
+        self.speed = self.Enemy_Stats["speed"] //2
         self.hp = self.Enemy_Stats["health"]
         self.damage = self.Enemy_Stats["damage"]
 
@@ -22,13 +22,14 @@ class Gegner(pygame.sprite.Sprite):
             self.image = pygame.Surface((30, 30))
             self.image.fill((255, 0, 0))
 
-        self.ROWS = 10                                      #Zeilen
-        self.COLS = 14                                    #Spalten
-        self.screen_x, self.screen_y = screen_size
-        self.start_x = 10                                   #Verschiebung X
-        self.start_y = 10     
+        self.ROWS = map.ROWS                                      #Zeilen
+        self.COLS = map.COLS                                    #Spalten
+        self.screen_x = map.screen_x 
+        self.screen_y = map.screen_y          #Bildschirm göße errechnen
+        self.start_x = map.start_x                                   #Verschiebung X
+        self.start_y = map.start_y
 
-        self.path = [(1,0), (1, 1), (1, 2), (1, 3), (1, 4),(1,5),(1,6),(1,7),(1,8),(1,9),(2,9),(3,9),(3,8),(3,7),(3,6),(3,5),(3,4),(4,4),(5,4),(6,4),(7,4),(8,4),(9,4)]  # Liste der Wegpunkte
+        self.path = path  # Liste der Wegpunkte
         self.path = path.copy()
         self.TILE_SIZE = (self.screen_y-20)//self.ROWS
         spawn_x, spawn_y = self.path.pop(0)

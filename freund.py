@@ -5,7 +5,7 @@ class Freund:
         self.schaden = 0
         self.rasse = ""
         self.reichweite = 0
-        self.angriffs_geschwindigkeit = 0.5
+        self.angriffs_geschwindigkeit = 500
         self.row, self.col = row, col
         self.screen = screen
 

@@ -17,11 +17,17 @@ class Spiel:
         self.MENU = "menu"
         self.GAME = "game"
         self.SETTINGS = "setting"
+        self.LOADINGSCREEN = "loadingscreen"
 
-        self.screen_state = self.MENU
+        self.screen_state = self.LOADINGSCREEN
 
         self.gui = gui.GUIManager(self.screen_state)
         #self.gegner = gegener.Gegner()
+
+        #Lade Bildschirm
+        start_y = self.screen_y // 1 - 170
+        spacing = 220
+        self.add_loadingscreen_button(900,150,"Press any button", start_y, self.menu_state)
 
         #Hier Rendern
         #Menu
@@ -46,28 +52,28 @@ class Spiel:
         self.gui.add_game(gui.Button(x=self.screen_x-60,y=10,width=50,height=50,color=(255, 0, 0),action=self.quit_game))
         self.gui.add_game(gui.Checkbox(x=self.tilemap.TILE_SIZE*self.tilemap.COLS+20,y=10,width=45,height=45,color=(0, 0, 0),state=0,action=self.tilemap.grid_ON_OFF))
         self.gui.add_game(gui.Button(x=panel_x,y=button_y,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement))
-        self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y,width=button_width,height=button_height,color=(0, 0, 0))) #Hier dann anderer Typ
+        self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y,width=button_width,height=button_height,color=(0, 0, 0),action=None)) #Hier dann anderer Typ
         
-
         clock = pygame.time.Clock()
 
         self.running = True
 
         #Gegner erstellen
-        self.gui.add_game(gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap.map_one(), (self.screen_x, self.screen_y)))
+        self.gui.add_game(gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap,self.tilemap.map_one(), (self.screen_x, self.screen_y)))
 
         while self.running:
 
-            self.dt = clock.tick(60) / 1000
+            self.dt = clock.tick(60)
 
             #Menu Handle:
-            if self.screen_state == self.MENU:
+            if self.screen_state == self.LOADINGSCREEN:
+                self.loadingscreen()
+            elif self.screen_state == self.MENU:
                 self.menu()
             elif self.screen_state == self.GAME:
                 self.game()
             elif self.screen_state == self.SETTINGS:
                 self.settings()
-                
 
             # Den Bildschirm mit einer Farbe füllen, um alles aus dem letzten Frame zu löschen.
 
@@ -110,9 +116,20 @@ class Spiel:
         if keys[pygame.K_SPACE]:
             self.game_state()
 
+    def loadingscreen(self):
+        self.screen.fill((255,255,255))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            self.gui.handle_event(event)
+
+
+        self.gui.draw(self.screen)
+
 
     def game(self):
-        self.screen.fill("white")
+        self.screen.fill((255,255,255))
  
         # HIER DAS SPIEL RENDERN
         #self.tilemap.draw_tilemap(self.screen)
@@ -133,7 +150,7 @@ class Spiel:
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
-            self.screen_state = self.MENU
+            self.menu_state()
 
     def settings(self):
         self.screen.fill((255,255,255))
@@ -159,6 +176,13 @@ class Spiel:
         self.gui.add_menu(gui.Button(x=self.screen_x // 2 - BUTTON_W // 2,y=y,width=BUTTON_W,height=BUTTON_H,color=(0, 0, 0),action=action))
 
         self.gui.add_menu(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text,font_size=100,color=(255, 255, 255),center=True))
+
+    def add_loadingscreen_button(self, width, height, text, y, action):
+        BUTTON_W, BUTTON_H = width, height
+
+        self.gui.add_loadingscreen(gui.Button(x=self.screen_x // 2 - BUTTON_W // 2,y=y,width=BUTTON_W,height=BUTTON_H,color=(0, 0, 0),action=action))
+
+        self.gui.add_loadingscreen(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text,font_size=100,color=(255, 255, 255),center=True))
 
     def enable_friend_placement(self):
         self.gui.placing_friend = True
