@@ -40,7 +40,7 @@ class Gegner(pygame.sprite.Sprite):
         self.start_y + spawn_x * self.TILE_SIZE + self.TILE_SIZE // 2   # vertikal Mitte des Tiles
         ))
 
-        self.image = pygame.image.load("/Users/wilson/Downloads/pixil-frame-0.png").convert_alpha()
+        #self.image = pygame.image.load("/Users/wilson/Downloads/pixil-frame-0.png").convert_alpha()
         # Optional: auf die Tile-Größe skalieren
         self.image = pygame.transform.scale(self.image, (self.TILE_SIZE, self.TILE_SIZE))
         self.rect = self.image.get_rect(center=self.rect.center)

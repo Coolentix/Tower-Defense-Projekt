@@ -2,9 +2,9 @@ import pygame
 import freund
 
 class TileMap:
-    def __init__(self,screen_size,gui):
-        self.ROWS = 10                                      #Spalten
-        self.COLS = 14                                      #Zeilen
+    def __init__(self,screen_size,x,y,gui):
+        self.ROWS = x                                      #Spalten
+        self.COLS = y                                      #Zeilen
         self.screen_x, self.screen_y = screen_size          #Bildschirm göße errechnen
         self.TILE_SIZE = (self.screen_y-20)//self.ROWS      #Größe des Tiles
         self.start_x = 10                                   #Verschiebung X

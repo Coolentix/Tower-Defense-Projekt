@@ -11,7 +11,7 @@ class GUIElement:
 
 
 class Button:
-    def __init__(self, x, y, width, height, color, action):
+    def __init__(self, x, y, width, height,color,alpha=255, action=None):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color  # RGB
         self.alpha = alpha
