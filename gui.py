@@ -14,7 +14,7 @@ class Button:
     def __init__(self, x, y, width, height, color, action):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color  # RGB
-        self.alpha = alpha
+        #self.alpha = alpha
         self.action = action
 
         # Transparente Surface
