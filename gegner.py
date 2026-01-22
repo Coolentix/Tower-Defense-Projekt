@@ -1,7 +1,7 @@
 import pygame
 
 class Gegner(pygame.sprite.Sprite):
-    def __init__(self, enemy_type, map, path, screen_size, image_path=None):
+    def __init__(self, enemy_type, map, path, image_path=None):
         super().__init__() # Greife auf EnemyType zu
 
         self.enemy_type = enemy_type

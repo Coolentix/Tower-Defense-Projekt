@@ -12,6 +12,7 @@ class GUIElement:
 
 class Button:
     def __init__(self, x, y, width, height, color, alpha=255, action=None):
+    def __init__(self, x, y, width, height, color, alpha=255, action=None):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color  # RGB
         self.alpha = alpha
@@ -19,6 +20,7 @@ class Button:
 
         # Transparente Surface
         self.surface = pygame.Surface((width, height), pygame.SRCALPHA)
+        self.surface.set_alpha(self.alpha)
         self.surface.set_alpha(self.alpha)
 
     def draw(self, screen):
@@ -41,6 +43,8 @@ class Button:
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
+                if self.action:
+                    self.action()
                 if self.action:
                     self.action()
 
@@ -95,9 +99,9 @@ class GUIManager:
                     self.gegner_list.append(e)           
         for e in self.elements.get(self.state, []):             
             if hasattr(e, "update"):              
-                            #Fragt ab ob eine update funktion existiert                 
+                #Fragt ab ob eine update funktion existiert                 
                 if isinstance(e, freund.Freund):                     
-                            e.update(delta_time)                 
+                        e.update(delta_time,self.gegner_list)                 
                 elif isinstance(e, gegner.Gegner) and not e.update(delta_time):                     
                         self.gegner_list.remove(e)                     
                         self.elements["game"].remove(e)                 
