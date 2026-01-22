@@ -124,7 +124,7 @@ class Spiel:
 
             self.gui.handle_event(event)
 
-        self.image = pygame.image.load("../Tower-Defense-Projekt/image.png").convert_alpha()
+        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/image.png").convert_alpha()
         width = self.image.get_width()
         height = self.image.get_height()
         self.image = pygame.transform.scale(self.image, (self.screen_x,self.screen_y))
