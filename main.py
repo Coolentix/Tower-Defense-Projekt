@@ -134,8 +134,8 @@ class Spiel:
         self.gui.draw(self.screen)
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
-            self.game_state()
+        #if keys[pygame.K_SPACE]:
+        #    self.game_state()
 
     def loadingscreen(self):
         self.screen.fill((255,255,255))
@@ -143,6 +143,9 @@ class Spiel:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type == pygame.K_DOWN:
+                self.menu_state()
+                
             self.gui.handle_event(event)
 
 
