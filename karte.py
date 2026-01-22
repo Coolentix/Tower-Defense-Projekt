@@ -118,10 +118,10 @@ class TileMap:
 
         #Tile Färben
         tile.type = TileType.FRIEND
-        tile.color = (0, 0, 0)
+        #tile.color = (0, 0, 0)
         tile.border = 0
 
-        self.gui.add_game(freund.Freund(row,col,(tile.rect.center)))
+        self.gui.add_game(freund.Freund(self,(tile.rect.center)))
 
 class TileType:
     EMPTY = 0

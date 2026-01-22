@@ -1,35 +1,43 @@
 import pygame
-import math
 
 class Freund:
-    def __init__(self, screen, row, col, position):
+    def __init__(self,map, position, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif"):
         self.schaden = 0
         self.rasse = ""
-        self.reichweite = 0
-        self.angriffs_geschwindigkeit = 500
-        self.row, self.col = row, col
-        self.screen = screen
+        self.row, self.col = map.ROWS, map.COLS
+        self.pos = pygame.math.Vector2(position)
+        self.size = (map.TILE_SIZE,map.TILE_SIZE)
+        self.image_path = image_path
 
-        self.range = 500
-        self.fire_rate = 500     # Sekunden
-
+        self.range = 250
+        self.fire_rate = 500     # ms
         self.timer = 0
 
         self.target = None
         self.projectiles = []
 
-    def update(self, dt, gegner_liste):
-        self.timer = dt
+        # ---- Bild ----
+        if isinstance(image_path, str):
+            self.image = pygame.image.load(image_path).convert_alpha()
+            self.image = pygame.transform.scale(self.image, self.size)
+            print("bild wird gesetzt")
+        else:
+            # Fallback (sichtbar zum Debuggen)
+            self.image = pygame.Surface(self.size, pygame.SRCALPHA)
+            self.image.fill((0, 200, 0))
 
-        # Ziel suchen, falls keins da ist oder tot
+        self.rect = self.image.get_rect(center=self.pos)
+
+    def update(self, dt, gegner_liste):
+        self.timer += dt
+
         if not self.target or not self.target.alive:
             self.target = self.find_target(gegner_liste)
 
-        # Schießen
         if self.target and self.timer >= self.fire_rate:
             self.shoot()
+            self.timer = 0
 
-        # Projektile updaten
         for p in self.projectiles[:]:
             p.update(dt)
             if not p.alive:
@@ -48,8 +56,9 @@ class Freund:
         self.projectiles.append(p)
 
     def draw(self,screen):
-        pygame.draw.circle(screen, (50, 200, 50), self.pos, 15)
-        pygame.draw.circle(screen, (50, 100, 50), self.pos, self.range, 1)
+        #pygame.draw.circle(screen, (50, 200, 50), self.pos, 15)
+        #pygame.draw.circle(screen, (50, 100, 50), self.pos, self.range, 1)
+        screen.blit(self.image, self.rect)
 
         for p in self.projectiles:
             p.draw(screen)

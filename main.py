@@ -60,7 +60,7 @@ class Spiel:
         self.running = True
 
         #Gegner erstellen
-        self.gui.add_game(gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap,self.tilemap.map_one(), (self.screen_x, self.screen_y)))
+        self.gui.add_game(gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap,self.tilemap.map_one()))
 
         while self.running:
 
@@ -107,17 +107,6 @@ class Spiel:
         self.screen_state = self.SETTINGS
 
     def menu(self):
-        #self.screen.fill("white")
-        """
-        self.image = pygame.image.load("../Tower-Defense-Projekt/image.png").convert_alpha()
-
-        width = self.image.get_width()
-        height = self.image.get_height()
-
-        self.image = pygame.transform.scale(self.image, (width // 2, height // 2))
-        self.rect = self.image.get_rect(center=(self.screen_x // 2, self.screen_y // 2))
-        """
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -143,7 +132,7 @@ class Spiel:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            if event.type == pygame.K_DOWN:
+            if event.type == pygame.KEYDOWN:
                 self.menu_state()
                 
             self.gui.handle_event(event)
@@ -163,6 +152,9 @@ class Spiel:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    self.spawn_enemy()
 
             self.gui.handle_event(event)
 

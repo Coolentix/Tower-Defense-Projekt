@@ -28,7 +28,6 @@ class Button:
         else:
             self.surface.set_alpha(self.alpha)
 
-
         # Surface leeren
         self.surface.fill((0, 0, 0, 0))
 
@@ -95,9 +94,9 @@ class GUIManager:
                     self.gegner_list.append(e)           
         for e in self.elements.get(self.state, []):             
             if hasattr(e, "update"):              
-                            #Fragt ab ob eine update funktion existiert                 
+                #Fragt ab ob eine update funktion existiert                 
                 if isinstance(e, freund.Freund):                     
-                            e.update(delta_time)                 
+                        e.update(delta_time,self.gegner_list)                 
                 elif isinstance(e, gegner.Gegner) and not e.update(delta_time):                     
                         self.gegner_list.remove(e)                     
                         self.elements["game"].remove(e)                 
