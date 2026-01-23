@@ -2,13 +2,13 @@ import pygame
 import math
 
 class Freund:
-    def __init__(self, row, col, position, freund_type):
+    def __init__(self, row, col, position, f_typ=0):
         self.row = row
         self.col = col
         self.pos = pygame.math.Vector2(position)
 
-        self.freund_type = freund_type
-        self.freund_Stats = freund_type.freund_Stats[freund_type]
+        self.freund_type = freund_type()
+        self.freund_Stats = self.freund_type.freund_Stats[f_typ]
 
         self.range = self.freund_Stats["range"]//2
         self.fire_rate = self.freund_Stats["fire_rate"]
@@ -16,6 +16,7 @@ class Freund:
         self.kosten = self.freund_Stats["kosten"]
 
         self.target = None
+        self.timer=0
         self.projectiles = []
 
     def update(self, dt, gegner_liste):
@@ -84,13 +85,15 @@ class freund_type:
     MAGIER = 1
     SPAMMER = 2
     DEFAULT = 3
-
-    freund_Stats = {
-        SNIPER: {"range": 750, "damage": 2, "fire_rate": 200, "kosten": 400},
-        MAGIER: {"range": 400, "damage": 4, "fire_rate": 100, "kosten": 700},
-        SPAMMER: {"range": 200, "damage": 1, "fire_rate": 1, "kosten": 600},
-        DEFAULT: {"range": 250, "damage": 1, "fire_rate": 100, "kosten": 100}
-    }
+    def __init__(self):
+        print("Hallo")
+        
+        self.freund_Stats = {
+            0: {"range": 750, "damage": 2, "fire_rate": 200, "kosten": 400},
+            1: {"range": 400, "damage": 4, "fire_rate": 100, "kosten": 700},
+            2: {"range": 200, "damage": 1, "fire_rate": 1, "kosten": 600},
+            3: {"range": 250, "damage": 1, "fire_rate": 100, "kosten": 100}
+        }
     def draw(self,screen):
         pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
 
