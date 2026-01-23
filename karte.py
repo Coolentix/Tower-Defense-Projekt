@@ -113,7 +113,7 @@ class TileMap:
         
         return path
 
-    def place_friend(self, row, col):
+    def place_friend(self, row, col, f_typ=0):
         tile = self.tilemap[row][col]
 
         #Tile Färben
