@@ -57,7 +57,7 @@ class Freund:
 
     def draw(self,screen):
         #pygame.draw.circle(screen, (50, 200, 50), self.pos, 15)
-        #pygame.draw.circle(screen, (50, 100, 50), self.pos, self.range, 1)
+        pygame.draw.circle(screen, (50, 100, 50), self.pos, self.range, 1)
         screen.blit(self.image, self.rect)
 
         for p in self.projectiles:
