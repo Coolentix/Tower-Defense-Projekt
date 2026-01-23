@@ -10,7 +10,7 @@ class Freund:
         self.image_path = image_path
 
         self.range = 250
-        self.fire_rate = 0.5     # sekunden
+        self.fire_rate = 100     # sekunden
         self.timer = 0
 
         self.target = None
