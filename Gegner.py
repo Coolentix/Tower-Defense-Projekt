@@ -92,9 +92,26 @@ class EnemyType:
         WALKER: {"health": 10, "speed": 2, "damage": 10},
         RUNNER: {"health": 7, "speed": 4, "damage": 8},
         TANK: {"health": 20, "speed": 1, "damage": 20},
+
     }
 
     #Enemy_images = {
         #WALKER: /Users/wilson/Downloads/pixilart-drawing.png
        # RUNNER: "runner_image_path.png",
         #TANK: "tank_image_path.png",
+
+class Runde:
+    def __init__(self):
+        self.runde = []  # Liste der Gegner in dieser Runde
+
+    runde1 = [
+        (EnemyType.WALKER, 0),
+        (EnemyType.WALKER, 100),
+        (EnemyType.RUNNER, 200),
+        (EnemyType.WALKER, 300),
+    ]
+
+    runde2 = []
+
+    
+

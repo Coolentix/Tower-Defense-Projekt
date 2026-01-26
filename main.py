@@ -18,6 +18,7 @@ class Spiel:
         self.GAME = "game"
         self.SETTINGS = "setting"
         self.LOADINGSCREEN = "loadingscreen"
+        self.TITLESCREEN = "titlescreen"
 
         self.screen_state = self.LOADINGSCREEN
 
@@ -28,6 +29,11 @@ class Spiel:
         start_y = self.screen_y // 1 - 170
         spacing = 220
         self.add_loadingscreen_button(900,150,"Press any button", start_y, self.menu_state)
+
+        #Titel Bildschirm
+        #start_y = self.screen_y // 2 - 320
+        #spacing = 220
+        #self.add_titlescreen_button(1900,700,"FRIENDS VS ENEMIES", start_y, self.menu_state)
 
         #Hier Rendern
         #Menu
@@ -58,8 +64,8 @@ class Spiel:
 
         self.running = True
 
-        #Gegner erstellen
-        self.gui.add_game(gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap,self.tilemap.map_one(), (self.screen_x, self.screen_y)))
+        #Runde erstellen
+        self.gui.add_game(gegner.Runde(gegner.Runde.runde1, self.tilemap,self.tilemap.map_one(), (self.screen_x, self.screen_y)))
 
         while self.running:
 
@@ -68,6 +74,8 @@ class Spiel:
             #Menu Handle:
             if self.screen_state == self.LOADINGSCREEN:
                 self.loadingscreen()
+            #elif self.screen_state == self.TITLESCREEN:
+                #self.titlescreen()
             elif self.screen_state == self.MENU:
                 self.menu()
             elif self.screen_state == self.GAME:
@@ -96,6 +104,10 @@ class Spiel:
     def game_state(self):
         self.screen_state = self.GAME
         self.gui.set_state(self.screen_state)
+
+    #def titlescreen_state(self):
+       # self.screen_state = self.TITLESCREEN
+        #self.gui.set_state(self.screen_state)
 
     def settings_state(self):
         self.screen_state = self.SETTINGS
@@ -126,6 +138,16 @@ class Spiel:
 
 
         self.gui.draw(self.screen)
+
+    #def titlescreen(self):
+      #  self.screen.fill((255,255,255))
+
+      #  for event in pygame.event.get():
+       #     if event.type == pygame.QUIT:
+       #         self.running = False
+       #     self.gui.handle_event(event)
+
+       # self.gui.draw(self.screen)
 
 
     def game(self):
@@ -183,6 +205,13 @@ class Spiel:
         self.gui.add_loadingscreen(gui.Button(x=self.screen_x // 2 - BUTTON_W // 2,y=y,width=BUTTON_W,height=BUTTON_H,color=(0, 0, 0),action=action))
 
         self.gui.add_loadingscreen(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text,font_size=100,color=(255, 255, 255),center=True))
+
+  #  def add_titlescreen_button(self, width, height, text, y, action):
+   #     BUTTON_W, BUTTON_H = width, height
+
+    #    self.gui.add_titlescreen(gui.Button(x=self.screen_x // 2 - BUTTON_W // 2,y=y,width=BUTTON_W,height=BUTTON_H,color=(0, 0, 0),action=action))
+
+     #   self.gui.add_titlescreen(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text,font_size=200,color=(255, 255, 255),center=True))
 
     def enable_friend_placement(self):
         self.gui.placing_friend = True
