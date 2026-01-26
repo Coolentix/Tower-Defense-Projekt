@@ -137,3 +137,52 @@ class Text(GUIElement):
 
     def draw(self, screen):         
         screen.blit(self.surface, self.rect) 
+
+# Klasse für Buttons mit Bildern, Haptik (Klick) und Hover-Effekt
+class ImageButton:
+    def __init__(self, x, y, width, height, image_path, action):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.action = action
+        self.image = None
+        
+        # Versuch das Bild zu laden und zu skalieren
+        try:
+            loaded_image = pygame.image.load(image_path).convert_alpha()
+            self.image = pygame.transform.scale(loaded_image, (width, height))
+        except Exception as e:
+            print(f"Fehler beim Laden von {image_path}: {e}")
+            # Fallback: Graues Rechteck, falls Bild fehlt
+            self.image = pygame.Surface((width, height))
+            self.image.fill((100, 100, 100))
+
+    def draw(self, screen):
+        # Positionen initialisieren
+        draw_x = self.rect.x
+        draw_y = self.rect.y
+        mouse_pos = pygame.mouse.get_pos()
+        is_hovered = self.rect.collidepoint(mouse_pos)
+
+        # Haptik: Wenn gedrückt, Button leicht verschieben
+        if is_hovered and pygame.mouse.get_pressed()[0]:
+            draw_x += 3
+            draw_y += 3
+
+        # 1. Das Bild zeichnen
+        screen.blit(self.image, (draw_x, draw_y))
+
+        # 2. Hover-Effekt ("Funkeln" / Aufleuchten)
+        if is_hovered:
+            # Erstelle eine weiße, halb-transparente Fläche
+            overlay = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+            overlay.fill((255, 255, 255, 50)) # Weiß mit Transparenz (50 von 255)
+            # Zeichne sie über den Button
+            screen.blit(overlay, (draw_x, draw_y))
+            
+            # Optional: Rand hervorheben
+            pygame.draw.rect(screen, (255, 255, 200), (draw_x, draw_y, self.rect.width, self.rect.height), 3)
+
+    def handle_event(self, event):
+        # Klick-Logik
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.rect.collidepoint(event.pos):
+                self.action()
