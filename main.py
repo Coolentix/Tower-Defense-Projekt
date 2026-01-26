@@ -75,7 +75,7 @@ class Spiel:
         self.running = True
 
         #Gegner erstellen
-        self.gui.add_game(gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap,self.tilemap.map_one()))
+        #self.gui.add_game(gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap,self.tilemap.map_one()))
 
         while self.running:
 
