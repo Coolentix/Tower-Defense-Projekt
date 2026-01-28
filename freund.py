@@ -1,11 +1,13 @@
 import pygame
-import math
 
 class Freund:
-    def __init__(self, row, col, position, f_typ=0):
-        self.row = row
-        self.col = col
+    def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif"):
+        self.schaden = 0
+        self.rasse = ""
+        self.row, self.col = map.ROWS, map.COLS
         self.pos = pygame.math.Vector2(position)
+        self.size = (map.TILE_SIZE,map.TILE_SIZE)
+        self.image_path = image_path
 
         self.freund_type = freund_type()
         self.freund_Stats = self.freund_type.freund_Stats[f_typ]
@@ -19,19 +21,28 @@ class Freund:
         self.timer=0
         self.projectiles = []
 
+        # ---- Bild ----
+        if isinstance(image_path, str):
+            self.image = pygame.image.load(image_path).convert_alpha()
+            self.image = pygame.transform.scale(self.image, self.size)
+            print("bild wird gesetzt")
+        else:
+            # Fallback (sichtbar zum Debuggen)
+            self.image = pygame.Surface(self.size, pygame.SRCALPHA)
+            self.image.fill((0, 200, 0))
+
+        self.rect = self.image.get_rect(center=self.pos)
+
     def update(self, dt, gegner_liste):
         self.timer += dt
 
-        # Ziel suchen, falls keins da ist oder tot
         if not self.target or not self.target.alive:
             self.target = self.find_target(gegner_liste)
 
-        # Schießen
         if self.target and self.timer >= self.fire_rate:
-            self.timer = 0
             self.shoot()
+            self.timer = 0
 
-        # Projektile updaten
         for p in self.projectiles[:]:
             p.update(dt)
             if not p.alive:
@@ -50,8 +61,9 @@ class Freund:
         self.projectiles.append(p)
 
     def draw(self,screen):
-        pygame.draw.circle(screen, (50, 200, 50), self.pos, 15)
+        #pygame.draw.circle(screen, (50, 200, 50), self.pos, 15)
         pygame.draw.circle(screen, (50, 100, 50), self.pos, self.range, 1)
+        screen.blit(self.image, self.rect)
 
         for p in self.projectiles:
             p.draw(screen)

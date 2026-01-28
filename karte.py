@@ -4,7 +4,7 @@ import freund
 class TileMap:
     def __init__(self,screen_size,x,y,gui):
         self.ROWS = x                                      #Spalten
-        self.COLS = y                                    #Zeilen
+        self.COLS = y                                      #Zeilen
         self.screen_x, self.screen_y = screen_size          #Bildschirm göße errechnen
         self.TILE_SIZE = (self.screen_y-20)//self.ROWS      #Größe des Tiles
         self.start_x = 10                                   #Verschiebung X
@@ -118,10 +118,10 @@ class TileMap:
 
         #Tile Färben
         tile.type = TileType.FRIEND
-        tile.color = (0, 0, 0)
+        #tile.color = (0, 0, 0)
         tile.border = 0
 
-        self.gui.add_game(freund.Freund(row,col,(tile.rect.center)))
+        self.gui.add_game(freund.Freund(self,(tile.rect.center)))
 
 class TileType:
     EMPTY = 0
