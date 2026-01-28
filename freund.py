@@ -92,6 +92,9 @@ class Projektil:
         richtung = richtung.normalize()
         self.pos += richtung * self.speed * dt
 
+    def draw(self, screen):
+        pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
+
 class freund_type:
     SNIPER = 0
     MAGIER = 1
