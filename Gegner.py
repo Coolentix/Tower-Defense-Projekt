@@ -40,7 +40,7 @@ class Gegner(pygame.sprite.Sprite):
         self.start_y + spawn_x * self.TILE_SIZE + self.TILE_SIZE // 2   # vertikal Mitte des Tiles
     ))
 
-        self.image = pygame.image.load("/Users/wilson/Downloads/pixil-frame-0.png").convert_alpha()
+        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/pixil-frame-0.png").convert_alpha()
         # Optional: auf die Tile-Größe skalieren
         self.image = pygame.transform.scale(self.image, (self.TILE_SIZE, self.TILE_SIZE))
         self.rect = self.image.get_rect(center=self.rect.center)
@@ -101,17 +101,36 @@ class EnemyType:
         #TANK: "tank_image_path.png",
 
 class Runde:
-    def __init__(self):
-        self.runde = []  # Liste der Gegner in dieser Runde
+    Runden = {
+        1: [
+            (EnemyType.WALKER, 0),
+            (EnemyType.WALKER, 0),
+            (EnemyType.WALKER, 0),
+            (EnemyType.WALKER, 0),
+        ]
+    }
 
-    runde1 = [
-        (EnemyType.WALKER, 0),
-        (EnemyType.WALKER, 100),
-        (EnemyType.RUNNER, 200),
-        (EnemyType.WALKER, 300),
-    ]
+    def __init__(self, nummer, delay_dict=None):
+        """
+        delay_dict: Dictionary mit {EnemyType: spawn_delay_ms}
+        """
+        self.nummer = nummer
+        self.runde = Runde.Runden.get(nummer, [])
+        if delay_dict:
+            self.setze_spawn_delay_pro_typ(delay_dict)
 
-    runde2 = []
+    def setze_spawn_delay_pro_typ(self, delay_dict):
+        """
+        Setzt die Spawnzeiten der Gegner basierend auf ihrem Typ.
+        delay_dict = {EnemyType.WALKER: 100, EnemyType.RUNNER: 50}
+        """
+        letzte_zeit_typ = {}  # Merkt die letzte Spawnzeit pro Typ
+        neue_runde = []
 
-    
+        for enemy_type, _ in self.runde:
+            delay = delay_dict.get(enemy_type, 100)  # Default 100ms
+            start_time = letzte_zeit_typ.get(enemy_type, 0)
+            neue_runde.append((enemy_type, start_time))
+            letzte_zeit_typ[enemy_type] = start_time + delay
 
+        self.runde = neue_runde
