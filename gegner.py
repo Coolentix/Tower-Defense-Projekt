@@ -93,6 +93,9 @@ class Gegner(pygame.sprite.Sprite):
             self.rect.centerx + self.direction.x * lead_distance,
             self.rect.centery + self.direction.y * lead_distance
         )
+    
+    def die(self):
+        self.kill()
 
 class EnemyType:
     WALKER = 0
