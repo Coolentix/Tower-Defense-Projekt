@@ -34,6 +34,8 @@ class Gegner(pygame.sprite.Sprite):
         self.TILE_SIZE = (self.screen_y-20)//self.ROWS
         spawn_x, spawn_y = self.path.pop(0)
 
+        self.direction = pygame.math.Vector2(0, 0)
+
         self.rect = self.image.get_rect(
         center=(
         self.start_x + spawn_y * self.TILE_SIZE + self.TILE_SIZE // 2,  # horizontal Mitte des Tiles
@@ -49,7 +51,7 @@ class Gegner(pygame.sprite.Sprite):
         if not self.path:
             self.kill()  # Entferne den Gegner, wenn der Pfad beendet ist
             return False
-        
+
         # Aktuelles Ziel         
         row, col = self.path[0]
         target = pygame.math.Vector2(
@@ -61,8 +63,8 @@ class Gegner(pygame.sprite.Sprite):
         position = pygame.math.Vector2(self.rect.center)
         
         # Richtungsvektor zum Ziel
-        direction = target - position
-        distance = direction.length()
+        self.direction = target - position
+        distance = self.direction.length()
 
         if distance == 0:             
             self.path.pop(0)             
@@ -74,13 +76,23 @@ class Gegner(pygame.sprite.Sprite):
             self.path.pop(0)
         else:
             # Normieren + Bewegung
-            direction = direction.normalize()
-            position += direction * self.speed * delta_time
+            self.direction = self.direction.normalize()
+            position += self.direction * self.speed * delta_time
             self.rect.center = position
         return True
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
+
+    def get_aim_point(self, lead_distance=20):
+        """
+        Gibt einen Punkt vor dem Gegner zurück,
+        den der Turm anvisieren kann
+        """
+        return (
+            self.rect.centerx + self.direction.x * lead_distance,
+            self.rect.centery + self.direction.y * lead_distance
+        )
 
 class EnemyType:
     WALKER = 0

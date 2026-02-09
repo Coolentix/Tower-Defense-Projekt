@@ -106,6 +106,7 @@ class Spiel:
     def settings_state(self):
         self.screen_state = self.SETTINGS
 
+        
     def menu(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

@@ -69,7 +69,7 @@ class GUIManager:
         self.elements = {"menu": [],"game": [], "loadingscreen": []}         
         self.state = screen_state         
         self.placing_friend = False           
-        self.gegner_list = []       
+        self.gegner_list = pygame.sprite.Group()     
     def set_state(self, state):         
         self.state = state     
 
@@ -91,7 +91,7 @@ class GUIManager:
     def update(self,delta_time):         
         for e in self.elements.get("game",[]):             
                 if isinstance(e, gegner.Gegner):                 
-                    self.gegner_list.append(e)           
+                    self.gegner_list.add(e)           
         for e in self.elements.get(self.state, []):             
             if hasattr(e, "update"):              
                 #Fragt ab ob eine update funktion existiert                 
