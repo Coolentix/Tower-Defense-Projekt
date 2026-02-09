@@ -200,16 +200,16 @@ class Spiel:
         self.gui.add_loadingscreen(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text,font_size=100,color=(255, 255, 255),center=True))
 
     def enable_friend_placement1(self):
-        self.gui.placing_friend = True
+        self.gui.placing_friend1 = True
 
     def enable_friend_placement2(self):
-        self.gui.placing_friend = True
+        self.gui.placing_friend2 = True
 
     def enable_friend_placement3(self):
-        self.gui.placing_friend = True
+        self.gui.placing_friend3 = True
     
     def enable_friend_placement4(self):
-        self.gui.placing_friend = True
+        self.gui.placing_friend4 = True
 
 class Kauf:
     pass

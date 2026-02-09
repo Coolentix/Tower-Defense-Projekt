@@ -72,7 +72,10 @@ class GUIManager:
     def __init__(self,screen_state):         
         self.elements = {"menu": [],"game": [], "loadingscreen": []}         
         self.state = screen_state         
-        self.placing_friend = False           
+        self.placing_friend1 = False
+        self.placing_friend2 = False           
+        self.placing_friend3 = False
+        self.placing_friend4 = False
         self.gegner_list = []       
     def set_state(self, state):         
         self.state = state     
