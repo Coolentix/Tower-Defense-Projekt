@@ -1,7 +1,7 @@
 import pygame
 
 class Freund:
-    def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif",game_speed=0.1):
+    def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif",game_speed=0.5):
         self.schaden = 0
         self.rasse = ""
         self.row, self.col = map.ROWS, map.COLS
