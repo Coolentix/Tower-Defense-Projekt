@@ -213,7 +213,7 @@ class Spiel:
                 if event.key == pygame.K_RETURN:
                     self.spawn_enemy()
 
-            self.gui.handle_event(event)
+            self.gui.handle_event(event) 
 
         
         self.gui.draw(self.screen)
