@@ -98,7 +98,7 @@ class GUIManager:
     def update(self,delta_time):         
         for e in self.elements.get("game",[]):             
                 if isinstance(e, gegner.Gegner):                 
-                    self.gegner_list.append(e)           
+                    self.gegner_list.add(e)           
         for e in self.elements.get(self.state, []):             
             if hasattr(e, "update"):              
                 #Fragt ab ob eine update funktion existiert                 
