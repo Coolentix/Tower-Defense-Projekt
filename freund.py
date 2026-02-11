@@ -1,7 +1,7 @@
 import pygame
 
 class Freund:
-    def __init__(self,map, position, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif"):
+    def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif"):
         self.schaden = 0
         self.rasse = ""
         self.row, self.col = map.ROWS, map.COLS
@@ -9,11 +9,16 @@ class Freund:
         self.size = (map.TILE_SIZE,map.TILE_SIZE)
         self.image_path = image_path
 
-        self.range = 250
-        self.fire_rate = 100     # sekunden
-        self.timer = 0
+        self.freund_type = freund_type()
+        self.freund_Stats = self.freund_type.freund_Stats[f_typ]
+
+        self.range = self.freund_Stats["range"]//2
+        self.fire_rate = self.freund_Stats["fire_rate"]
+        self.damage = self.freund_Stats["damage"]
+        self.kosten = self.freund_Stats["kosten"]
 
         self.target = None
+        self.timer=0
         self.projectiles = []
 
         # ---- Bild ----
@@ -99,5 +104,22 @@ class Projektil:
             self.alive = False
 
     def draw(self, screen):
+        pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
+
+class freund_type:
+    SNIPER = 0
+    MAGIER = 1
+    SPAMMER = 2
+    DEFAULT = 3
+    def __init__(self):
+        print("Hallo")
+        
+        self.freund_Stats = {
+            0: {"range": 750, "damage": 2, "fire_rate": 200, "kosten": 400},
+            1: {"range": 400, "damage": 4, "fire_rate": 100, "kosten": 700},
+            2: {"range": 200, "damage": 1, "fire_rate": 1, "kosten": 600},
+            3: {"range": 250, "damage": 1, "fire_rate": 100, "kosten": 100}
+        }
+    def draw(self,screen):
         pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
 

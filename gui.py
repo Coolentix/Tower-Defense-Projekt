@@ -20,6 +20,7 @@ class Button:
         # Transparente Surface
         self.surface = pygame.Surface((width, height), pygame.SRCALPHA)
         self.surface.set_alpha(self.alpha)
+        self.surface.set_alpha(self.alpha)
 
     def draw(self, screen):
         mouse_pos = pygame.mouse.get_pos()
@@ -27,6 +28,7 @@ class Button:
             self.surface.set_alpha(120)
         else:
             self.surface.set_alpha(self.alpha)
+
 
         # Surface leeren
         self.surface.fill((0, 0, 0, 0))
@@ -40,6 +42,8 @@ class Button:
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
+                if self.action:
+                    self.action()
                 if self.action:
                     self.action()
 
@@ -68,7 +72,10 @@ class GUIManager:
     def __init__(self,screen_state):         
         self.elements = {"menu": [],"game": [], "loadingscreen": []}         
         self.state = screen_state         
-        self.placing_friend = False           
+        self.placing_friend1 = False
+        self.placing_friend2 = False           
+        self.placing_friend3 = False
+        self.placing_friend4 = False
         self.gegner_list = pygame.sprite.Group()     
     def set_state(self, state):         
         self.state = state     
