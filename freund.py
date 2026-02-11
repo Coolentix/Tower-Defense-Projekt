@@ -1,7 +1,7 @@
 import pygame
 
 class Freund:
-    def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif",game_speed=0.1):
+    def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif",game_speed=0.5):
         self.schaden = 0
         self.rasse = ""
         self.row, self.col = map.ROWS, map.COLS
@@ -89,6 +89,9 @@ class Freund:
         for p in self.projectiles:
             p.draw(screen)
 
+    def projectiles_return(self):
+        return self.projectiles
+
 class Projektil:
     def __init__(self, pos, richtung, gegner):
         self.pos = pygame.math.Vector2(pos)
@@ -97,6 +100,9 @@ class Projektil:
         self.speed = 5      # Pixel pro milli Sekunde
         self.radius = 5
         self.alive = True
+
+        self.rect = pygame.Rect(self.pos.x, self.pos.y, 10, 10)
+        self.rect.center = pos
 
     def update(self, dt):
         self.pos += self.richtung * self.speed * dt 

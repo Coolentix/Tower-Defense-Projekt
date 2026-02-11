@@ -170,8 +170,7 @@ class Spiel:
 
             self.gui.handle_event(event)
 
-        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/image.png").convert_alpha()
-        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/image.png").convert_alpha()
+        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/pixil-frame-0 (2).png").convert_alpha()
         width = self.image.get_width()
         height = self.image.get_height()
         self.image = pygame.transform.scale(self.image, (self.screen_x,self.screen_y))
@@ -199,22 +198,11 @@ class Spiel:
 
         self.gui.draw(self.screen)
 
-    #def titlescreen(self):
-      #  self.screen.fill((255,255,255))
-
-      #  for event in pygame.event.get():
-       #     if event.type == pygame.QUIT:
-       #         self.running = False
-       #     self.gui.handle_event(event)
-
-       # self.gui.draw(self.screen)
-
 
     def game(self):
         self.screen.fill((255,255,255))
  
         # HIER DAS SPIEL RENDERN
-        #self.tilemap.draw_tilemap(self.screen)
 
         # Ereignisse abfragen
         # Das pygame.QUIT-Event wird ausgelöst, wenn der Benutzer das Fenster über das Schließen-Symbol (X) beendet.
@@ -230,6 +218,8 @@ class Spiel:
         
         self.gui.draw(self.screen)
         self.gui.update(self.dt)
+
+        self.gui.gegner_kill()
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:

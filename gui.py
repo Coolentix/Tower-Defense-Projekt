@@ -118,6 +118,18 @@ class GUIManager:
             if hasattr(e, "handle_event"):                 
                 e.handle_event(event)
 
+    def gegner_kill(self):
+        bullet_group = []
+        for e in self.elements.get("game", []):
+            if isinstance(e, freund.Freund):
+                bullet_group.extend(e.projectiles_return())
+        
+        hits = pygame.sprite.groupcollide(bullet_group, self.gegner_list, True, False)
+
+        for bullet, enemies in hits.items():
+            for gegner in enemies:
+                gegner.die()
+
 class Text(GUIElement):     
     def __init__(self, x, y,text,font_size=24,color=(255, 255, 255),font_path=None,center=False):         
         self.x = x         
