@@ -4,7 +4,7 @@ import freund
 class TileMap:
     def __init__(self,screen_size,x,y,gui):
         self.ROWS = x                                      #Spalten
-        self.COLS = y                                    #Zeilen
+        self.COLS = y                                      #Zeilen
         self.screen_x, self.screen_y = screen_size          #Bildschirm göße errechnen
         self.TILE_SIZE = (self.screen_y-20)//self.ROWS      #Größe des Tiles
         self.start_x = 10                                   #Verschiebung X
@@ -51,7 +51,7 @@ class TileMap:
                 pygame.draw.rect(screen, (255,100,100), tile.rect)
             if tile.type == TileType.FRIEND:
                 pygame.draw.rect(screen, (100,100,100), tile.rect)
-            if tile.type == TileType.EMPTY and self.gui.placing_friend:
+            if tile.type == TileType.EMPTY and self.gui.placing_friend1 or self.gui.placing_friend2 or self.gui.placing_friend3 or self.gui.placing_friend4:
                 pygame.draw.rect(screen, (100,255,100), tile.rect)
                 
 
@@ -60,9 +60,18 @@ class TileMap:
                 #print(row,col)
                 if tile.type == 1:
                     pass
-                elif tile.type == 0 and self.gui.placing_friend:    #Hier später: and self.tile_type == Friend_type_xy
-                    self.place_friend(row, col)
-                    self.gui.placing_friend = False
+                elif tile.type == 0 and self.gui.placing_friend1:    #Hier später: and self.tile_type == Friend_type_xy
+                    self.place_friend1(row, col)
+                    self.gui.placing_friend1 = False
+                elif tile.type == 0 and self.gui.placing_friend2:    #Hier später: and self.tile_type == Friend_type_xy
+                    self.place_friend2(row, col)
+                    self.gui.placing_friend2 = False
+                elif tile.type == 0 and self.gui.placing_friend3:    #Hier später: and self.tile_type == Friend_type_xy
+                    self.place_friend3(row, col)
+                    self.gui.placing_friend3 = False
+                elif tile.type == 0 and self.gui.placing_friend4:    #Hier später: and self.tile_type == Friend_type_xy
+                    self.place_friend4(row, col)
+                    self.gui.placing_friend4 = False
                 elif tile.type == 3:
                     pass
                 else:
@@ -113,15 +122,46 @@ class TileMap:
         
         return path
 
-    def place_friend(self, row, col):
+    def place_friend1(self, row, col, f_typ=0):
         tile = self.tilemap[row][col]
 
         #Tile Färben
         tile.type = TileType.FRIEND
-        tile.color = (0, 0, 0)
+        #tile.color = (0, 0, 0)
         tile.border = 0
 
-        self.gui.add_game(freund.Freund(row,col,(tile.rect.center)))
+        self.gui.add_game(freund.Freund(self,(tile.rect.center), f_typ))
+
+    def place_friend2(self, row, col, f_typ=1):
+        tile = self.tilemap[row][col]
+
+        #Tile Färben
+        tile.type = TileType.FRIEND
+        #tile.color = (0, 0, 0)
+        tile.border = 0
+
+        self.gui.add_game(freund.Freund(self,(tile.rect.center), f_typ))
+
+    def place_friend3(self, row, col, f_typ=2):
+
+        tile = self.tilemap[row][col]
+        #Tile Färben
+        tile.type = TileType.FRIEND
+        #tile.color = (0, 0, 0)
+        tile.border = 0
+
+        self.gui.add_game(freund.Freund(self,(tile.rect.center), f_typ))
+
+
+    def place_friend4(self, row, col, f_typ=3):
+        tile = self.tilemap[row][col]
+
+        #Tile Färben
+        tile.type = TileType.FRIEND
+        #tile.color = (0, 0, 0)
+        tile.border = 0
+
+        self.gui.add_game(freund.Freund(self,(tile.rect.center), f_typ))
 
 class TileType:
     EMPTY = 0

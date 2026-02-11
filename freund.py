@@ -1,32 +1,48 @@
 import pygame
-import math
 
 class Freund:
-    def __init__(self, row, col, position):
-        self.row = row
-        self.col = col
+    def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif"):
+        self.schaden = 0
+        self.rasse = ""
+        self.row, self.col = map.ROWS, map.COLS
         self.pos = pygame.math.Vector2(position)
+        self.size = (map.TILE_SIZE,map.TILE_SIZE)
+        self.image_path = image_path
 
-        self.range = 500
-        self.fire_rate = 500     # Sekunden
-        self.timer = 0
+        self.freund_type = freund_type()
+        self.freund_Stats = self.freund_type.freund_Stats[f_typ]
+
+        self.range = self.freund_Stats["range"]//2
+        self.fire_rate = self.freund_Stats["fire_rate"]
+        self.damage = self.freund_Stats["damage"]
+        self.kosten = self.freund_Stats["kosten"]
 
         self.target = None
+        self.timer=0
         self.projectiles = []
+
+        # ---- Bild ----
+        if isinstance(image_path, str):
+            self.image = pygame.image.load(image_path).convert_alpha()
+            self.image = pygame.transform.scale(self.image, self.size)
+            print("bild wird gesetzt")
+        else:
+            # Fallback (sichtbar zum Debuggen)
+            self.image = pygame.Surface(self.size, pygame.SRCALPHA)
+            self.image.fill((0, 200, 0))
+
+        self.rect = self.image.get_rect(center=self.pos)
 
     def update(self, dt, gegner_liste):
         self.timer += dt
 
-        # Ziel suchen, falls keins da ist oder tot
         if not self.target or not self.target.alive:
             self.target = self.find_target(gegner_liste)
 
-        # Schießen
         if self.target and self.timer >= self.fire_rate:
-            self.timer = 0
             self.shoot()
+            self.timer = 0
 
-        # Projektile updaten
         for p in self.projectiles[:]:
             p.update(dt)
             if not p.alive:
@@ -45,8 +61,9 @@ class Freund:
         self.projectiles.append(p)
 
     def draw(self,screen):
-        pygame.draw.circle(screen, (50, 200, 50), self.pos, 15)
+        #pygame.draw.circle(screen, (50, 200, 50), self.pos, 15)
         pygame.draw.circle(screen, (50, 100, 50), self.pos, self.range, 1)
+        screen.blit(self.image, self.rect)
 
         for p in self.projectiles:
             p.draw(screen)
@@ -75,6 +92,23 @@ class Projektil:
         richtung = richtung.normalize()
         self.pos += richtung * self.speed * dt
 
+    def draw(self, screen):
+        pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
+
+class freund_type:
+    SNIPER = 0
+    MAGIER = 1
+    SPAMMER = 2
+    DEFAULT = 3
+    def __init__(self):
+        print("Hallo")
+        
+        self.freund_Stats = {
+            0: {"range": 750, "damage": 2, "fire_rate": 200, "kosten": 400},
+            1: {"range": 400, "damage": 4, "fire_rate": 100, "kosten": 700},
+            2: {"range": 200, "damage": 1, "fire_rate": 1, "kosten": 600},
+            3: {"range": 250, "damage": 1, "fire_rate": 100, "kosten": 100}
+        }
     def draw(self,screen):
         pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
 
