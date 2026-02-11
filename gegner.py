@@ -42,7 +42,7 @@ class Gegner(pygame.sprite.Sprite):
         self.start_y + spawn_x * self.TILE_SIZE + self.TILE_SIZE // 2   # vertikal Mitte des Tiles
         ))
 
-        #self.image = pygame.image.load("/Users/wilson/Downloads/pixil-frame-0.png").convert_alpha()
+        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/pixil-frame-0.png").convert_alpha()
         # Optional: auf die Tile-Größe skalieren
         self.image = pygame.transform.scale(self.image, (self.TILE_SIZE, self.TILE_SIZE))
         self.rect = self.image.get_rect(center=self.rect.center)
@@ -106,9 +106,45 @@ class EnemyType:
         WALKER: {"health": 10, "speed": 2, "damage": 10},
         RUNNER: {"health": 7, "speed": 4, "damage": 8},
         TANK: {"health": 20, "speed": 1, "damage": 20},
+
     }
 
     #Enemy_images = {
         #WALKER: /Users/wilson/Downloads/pixilart-drawing.png
        # RUNNER: "runner_image_path.png",
         #TANK: "tank_image_path.png",
+
+class Runde:
+    Runden = {
+        1: [
+            (EnemyType.WALKER, 0),
+            (EnemyType.WALKER, 0),
+            (EnemyType.WALKER, 0),
+            (EnemyType.WALKER, 0),
+        ]
+    }
+
+    def __init__(self, nummer, delay_dict=None):
+        """
+        delay_dict: Dictionary mit {EnemyType: spawn_delay_ms}
+        """
+        self.nummer = nummer
+        self.runde = Runde.Runden.get(nummer, [])
+        if delay_dict:
+            self.setze_spawn_delay_pro_typ(delay_dict)
+
+    def setze_spawn_delay_pro_typ(self, delay_dict):
+        """
+        Setzt die Spawnzeiten der Gegner basierend auf ihrem Typ.
+        delay_dict = {EnemyType.WALKER: 100, EnemyType.RUNNER: 50}
+        """
+        letzte_zeit_typ = {}  # Merkt die letzte Spawnzeit pro Typ
+        neue_runde = []
+
+        for enemy_type, _ in self.runde:
+            delay = delay_dict.get(enemy_type, 100)  # Default 100ms
+            start_time = letzte_zeit_typ.get(enemy_type, 0)
+            neue_runde.append((enemy_type, start_time))
+            letzte_zeit_typ[enemy_type] = start_time + delay
+
+        self.runde = neue_runde

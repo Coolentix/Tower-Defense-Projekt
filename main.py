@@ -18,6 +18,7 @@ class Spiel:
         self.GAME = "game"
         self.SETTINGS = "setting"
         self.LOADINGSCREEN = "loadingscreen"
+        self.TITLESCREEN = "titlescreen"
 
         self.screen_state = self.LOADINGSCREEN
 
@@ -29,6 +30,11 @@ class Spiel:
         start_y = self.screen_y // 1 - 170
         spacing = 220
         self.add_loadingscreen_button(900,150,"Press any button", start_y, self.menu_state)
+
+        #Titel Bildschirm
+        #start_y = self.screen_y // 2 - 320
+        #spacing = 220
+        #self.add_titlescreen_button(1900,700,"FRIENDS VS ENEMIES", start_y, self.menu_state)
 
         #Hier Rendern
         #Menu
@@ -61,8 +67,53 @@ class Spiel:
 
         self.running = True
 
-        #Gegner erstellen
-        self.gui.add_game(gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap,self.tilemap.map_one()))
+        #Runde erstellen
+        #self.gui.add_game(gegner.Runde(gegner.Runde.runde1, self.tilemap,self.tilemap.map_one(), (self.screen_x, self.screen_y)))
+
+        # 1. Delay pro Gegnertyp definieren
+        delay_dict = {
+            gegner.EnemyType.WALKER: 100,
+            gegner.EnemyType.RUNNER: 50,
+            gegner.EnemyType.TANK: 200
+        }
+
+        # 2. Runde erstellen und Spawnzeiten berechnen
+        runde = gegner.Runde(1, delay_dict)  # <-- Hier wird die Variable "runde" erzeugt
+
+        # 3. Spawner erstellen
+        self.spawner = GegnerSpawner(
+            runde.runde,               # Liste der Gegner + Spawnzeiten
+            self.tilemap,
+            self.tilemap.map_one(),
+            (self.screen_x, self.screen_y),
+            self.gui
+)
+
+        # Vorbereitung
+        pending = list(runde.runde)  # Gegner, die noch kommen
+        active_enemies = []
+        timer = 0
+
+        # Im Game-Loop:
+        delta_time = clock.get_time() / 1000  # Sekunden seit letztem Frame
+        timer += delta_time * 1000           # in Millisekunden
+
+        # Gegner spawnen, wenn Zeit erreicht
+        while pending and pending[0][1] <= timer:
+            enemy_type, spawn_time = pending.pop(0)
+            enemy = gegner.Gegner(
+                enemy_type,
+                self.tilemap,
+                self.tilemap.map_one(),
+                (self.screen_x, self.screen_y)
+            )
+            self.gui.add_game(enemy)
+            active_enemies.append(enemy)
+
+        # Alle aktiven Gegner updaten
+        for enemy in active_enemies:
+            enemy.update(delta_time)
+
 
         while self.running:
 
@@ -71,6 +122,8 @@ class Spiel:
             #Menu Handle:
             if self.screen_state == self.LOADINGSCREEN:
                 self.loadingscreen()
+            #elif self.screen_state == self.TITLESCREEN:
+                #self.titlescreen()
             elif self.screen_state == self.MENU:
                 self.menu()
             elif self.screen_state == self.GAME:
@@ -144,6 +197,16 @@ class Spiel:
 
 
         self.gui.draw(self.screen)
+
+    #def titlescreen(self):
+      #  self.screen.fill((255,255,255))
+
+      #  for event in pygame.event.get():
+       #     if event.type == pygame.QUIT:
+       #         self.running = False
+       #     self.gui.handle_event(event)
+
+       # self.gui.draw(self.screen)
 
 
     def game(self):

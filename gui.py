@@ -89,6 +89,9 @@ class GUIManager:
     def add_loadingscreen(self, element):         
         self.elements["loadingscreen"].append(element)    
 
+   # def add_titlescreen(self, element):
+    #    self.elements["titlescreen"].append(element)
+
     def draw(self, screen):         
         for e in self.elements.get(self.state, []):             
             if hasattr(e, "draw"):              
