@@ -1,7 +1,7 @@
 import pygame
 
 class Freund:
-    def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif"):
+    def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif",game_speed=0.1):
         self.schaden = 0
         self.rasse = ""
         self.row, self.col = map.ROWS, map.COLS
@@ -12,8 +12,8 @@ class Freund:
         self.freund_type = freund_type()
         self.freund_Stats = self.freund_type.freund_Stats[f_typ]
 
-        self.range = self.freund_Stats["range"]//2
-        self.fire_rate = self.freund_Stats["fire_rate"]
+        self.range = self.freund_Stats["range"] //2
+        self.fire_rate = self.freund_Stats["fire_rate"] // game_speed
         self.damage = self.freund_Stats["damage"]
         self.kosten = self.freund_Stats["kosten"]
 
@@ -117,7 +117,7 @@ class freund_type:
         self.freund_Stats = {
             0: {"range": 750, "damage": 2, "fire_rate": 200, "kosten": 400},
             1: {"range": 400, "damage": 4, "fire_rate": 100, "kosten": 700},
-            2: {"range": 200, "damage": 1, "fire_rate": 1, "kosten": 600},
+            2: {"range": 200, "damage": 1, "fire_rate": 50, "kosten": 600},
             3: {"range": 250, "damage": 1, "fire_rate": 100, "kosten": 100}
         }
     def draw(self,screen):
