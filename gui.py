@@ -11,20 +11,41 @@ class GUIElement:
 
 
 class Button:
-    def __init__(self, x, y, width, height, color, action):
+    def __init__(self, x, y, width, height, color, alpha=255, action=None):
         self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
+        self.color = color  # RGB
+        self.alpha = alpha
         self.action = action
+
+        # Transparente Surface
+        self.surface = pygame.Surface((width, height), pygame.SRCALPHA)
+        self.surface.set_alpha(self.alpha)
+        self.surface.set_alpha(self.alpha)
 
     def draw(self, screen):
         mouse_pos = pygame.mouse.get_pos()
-        color = (150, 0, 0) if self.rect.collidepoint(mouse_pos) else self.color
-        pygame.draw.rect(screen, color, self.rect)
+        if self.rect.collidepoint(mouse_pos):
+            self.surface.set_alpha(120)
+        else:
+            self.surface.set_alpha(self.alpha)
+
+
+        # Surface leeren
+        self.surface.fill((0, 0, 0, 0))
+
+        # Button auf die Surface zeichnen
+        pygame.draw.rect(self.surface, self.color, self.surface.get_rect())
+
+        # Surface auf den Screen zeichnen
+        screen.blit(self.surface, self.rect.topleft)
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
-                self.action()
+                if self.action:
+                    self.action()
+                if self.action:
+                    self.action()
 
 
 class Checkbox:
@@ -51,8 +72,11 @@ class GUIManager:
     def __init__(self,screen_state):         
         self.elements = {"menu": [],"game": [], "loadingscreen": []}         
         self.state = screen_state         
-        self.placing_friend = False           
-        self.gegner_list = []       
+        self.placing_friend1 = False
+        self.placing_friend2 = False           
+        self.placing_friend3 = False
+        self.placing_friend4 = False
+        self.gegner_list = pygame.sprite.Group()     
     def set_state(self, state):         
         self.state = state     
 
@@ -77,12 +101,12 @@ class GUIManager:
     def update(self,delta_time):         
         for e in self.elements.get("game",[]):             
                 if isinstance(e, gegner.Gegner):                 
-                    self.gegner_list.append(e)           
+                    self.gegner_list.add(e)           
         for e in self.elements.get(self.state, []):             
             if hasattr(e, "update"):              
-                            #Fragt ab ob eine update funktion existiert                 
+                #Fragt ab ob eine update funktion existiert                 
                 if isinstance(e, freund.Freund):                     
-                            e.update(delta_time)                 
+                        e.update(delta_time,self.gegner_list)                 
                 elif isinstance(e, gegner.Gegner) and not e.update(delta_time):                     
                         self.gegner_list.remove(e)                     
                         self.elements["game"].remove(e)                 
