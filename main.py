@@ -81,6 +81,7 @@ class Spiel:
         runde = gegner.Runde(1, delay_dict)  # <-- Hier wird die Variable "runde" erzeugt
 
         # 3. Spawner erstellen
+        """
         self.spawner = GegnerSpawner(
             runde.runde,               # Liste der Gegner + Spawnzeiten
             self.tilemap,
@@ -88,7 +89,7 @@ class Spiel:
             (self.screen_x, self.screen_y),
             self.gui
 )
-
+"""
         # Vorbereitung
         pending = list(runde.runde)  # Gegner, die noch kommen
         active_enemies = []
@@ -105,7 +106,7 @@ class Spiel:
                 enemy_type,
                 self.tilemap,
                 self.tilemap.map_one(),
-                (self.screen_x, self.screen_y)
+                "../Tower-Defense-Projekt/bilder/pixil-frame-0.png"
             )
             self.gui.add_game(enemy)
             active_enemies.append(enemy)
