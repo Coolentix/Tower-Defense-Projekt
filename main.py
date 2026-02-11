@@ -22,7 +22,8 @@ class Spiel:
         self.screen_state = self.LOADINGSCREEN
 
         self.gui = gui.GUIManager(self.screen_state)
-        #self.gegner = gegener.Gegner()
+        
+        self.game_speed = 1
 
         #Lade Bildschirm
         start_y = self.screen_y // 1 - 170

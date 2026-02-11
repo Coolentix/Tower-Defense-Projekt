@@ -1,13 +1,13 @@
 import pygame
 
 class Gegner(pygame.sprite.Sprite):
-    def __init__(self, enemy_type, map, path, image_path=None):
+    def __init__(self, enemy_type, map, path, image_path=None, game_speed=0.1):
         super().__init__() # Greife auf EnemyType zu
 
         self.enemy_type = enemy_type
         self.Enemy_Stats = EnemyType.Enemy_Stats[enemy_type]
 
-        self.speed = self.Enemy_Stats["speed"] //2
+        self.speed = self.Enemy_Stats["speed"] * game_speed
         self.hp = self.Enemy_Stats["health"]
         self.damage = self.Enemy_Stats["damage"]
 
