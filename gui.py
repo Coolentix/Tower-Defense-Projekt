@@ -76,7 +76,7 @@ class GUIManager:
         self.placing_friend2 = False           
         self.placing_friend3 = False
         self.placing_friend4 = False
-        self.gegner_list = []       
+        self.gegner_list = pygame.sprite.Group()     
     def set_state(self, state):         
         self.state = state     
 
