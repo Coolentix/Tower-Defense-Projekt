@@ -106,7 +106,7 @@ class Projektil(pygame.sprite.Sprite):
         self.radius = 5
 
         # image + rect sind Pflicht
-        self.image = pygame.Surface((10, 10), pygame.SRCALPHA)
+        self.image = pygame.Surface((1, 1), pygame.SRCALPHA)
         pygame.draw.circle(self.image, (255, 50, 50), (5, 5), self.radius)
         self.rect = self.image.get_rect(center=pos)
 
