@@ -19,7 +19,7 @@ class Freund:
 
         self.target = None
         self.timer=0
-        self.projectiles = []
+        self.projectiles = pygame.sprite.Group()  
 
         # ---- Bild ----
         if isinstance(image_path, str):
@@ -58,10 +58,10 @@ class Freund:
             self.timer = 0
 
         # ---- Projectiles updaten ----
-        for p in self.projectiles[:]:
+        for p in self.projectiles.sprites():
             p.update(dt)
-            if not p.alive:
-                self.projectiles.remove(p)
+            if not p.alive():
+                self.projectiles.kill(p)
 
     def find_target(self, gegner_liste):
         turm_pos = pygame.math.Vector2(self.rect.center)
@@ -79,7 +79,7 @@ class Freund:
         richtung = (ziel_pos - start_pos).normalize()
 
         p = Projektil(start_pos, richtung, ziel_pos)
-        self.projectiles.append(p)
+        self.projectiles.add(p)
 
     def draw(self,screen):
         #pygame.draw.circle(screen, (50, 200, 50), self.pos, 15)
@@ -89,22 +89,36 @@ class Freund:
         for p in self.projectiles:
             p.draw(screen)
 
-class Projektil:
+    def projectiles_return(self):
+        return self.projectiles
+
+class Projektil(pygame.sprite.Sprite):
     def __init__(self, pos, richtung, gegner):
+        super().__init__()
+
         self.pos = pygame.math.Vector2(pos)
         self.richtung = pygame.math.Vector2(richtung)
+        if self.richtung.length_squared() != 0:
+            self.richtung = self.richtung.normalize()
         self.gegner = pygame.math.Vector2(gegner)
-        self.speed = 5      # Pixel pro milli Sekunde
+
+        self.speed = 5      # Pixel pro Sekunde
         self.radius = 5
-        self.alive = True
+
+        # image + rect sind Pflicht
+        self.image = pygame.Surface((10, 10), pygame.SRCALPHA)
+        pygame.draw.circle(self.image, (255, 50, 50), (5, 5), self.radius)
+        self.rect = self.image.get_rect(center=pos)
 
     def update(self, dt):
-        self.pos += self.richtung * self.speed * dt 
-        if self.pos == self.gegner:
-            self.alive = False
+        self.pos += self.richtung * self.speed * dt
+        self.rect.center = self.pos
 
     def draw(self, screen):
         pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
+
+    def die(self):
+        self.kill()
 
 class freund_type:
     SNIPER = 0
