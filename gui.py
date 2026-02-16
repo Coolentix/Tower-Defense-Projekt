@@ -154,7 +154,7 @@ class Text(GUIElement):
 
     def set_color(self, new_color):         
         self.color = new_color         
-        self._render_text()       
+        self._render_text()
 
     def draw(self, screen):         
         screen.blit(self.surface, self.rect) 

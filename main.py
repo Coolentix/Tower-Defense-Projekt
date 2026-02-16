@@ -170,7 +170,7 @@ class Spiel:
         self.gui.draw(self.screen)
         self.gui.update(self.dt)
         self.runde = runde.RundenManager(1)
-        self.runde.update(self.dt, self.gui.gegner_list)
+        self.runde.update(self.dt)
 
         self.gui.gegner_kill()
 

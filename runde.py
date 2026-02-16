@@ -9,11 +9,11 @@ class RundenManager:
             gegner.EnemyType.TANK: 200
         }
 
-        self.runde = Runde(runden_nummer, delay_dict)
+        self.runde = GreenFN(runden_nummer, delay_dict)
         self.timer = 0
         self.spawn_index = 0
 
-    def update(self, dt, gegner_liste):
+    def update(self, dt):
         self.timer += dt
 
         if self.spawn_index < len(self.runde.runde):
@@ -24,7 +24,7 @@ class RundenManager:
                 self.spawn_index += 1
 
 
-class Runden:
+class GreenFN:
     Runden = {
         1: [
             (gegner.EnemyType.WALKER, 0),
@@ -39,7 +39,7 @@ class Runden:
         delay_dict: Dictionary mit {EnemyType: spawn_delay_ms}
         """
         self.nummer = nummer
-        self.runde = Runde.Runden.get(nummer, [])
+        self.runde = GreenFN.Runden.get(nummer, [])
         if delay_dict:
             self.setze_spawn_delay_pro_typ(delay_dict)
 
