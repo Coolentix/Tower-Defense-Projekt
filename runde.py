@@ -1,60 +1,58 @@
 import gegner
-import main
 
 class RundenManager:
     def __init__(self, runden_nummer):
-        delay_dict = {
-            gegner.EnemyType.WALKER: 100,
-            gegner.EnemyType.RUNNER: 50,
-            gegner.EnemyType.TANK: 200
+        self.delay_dict = {
+            gegner.EnemyType.WALKER: 500,
+            gegner.EnemyType.RUNNER: 300,
+            gegner.EnemyType.TANK: 1500
         }
 
-        self.runde = GreenFN(runden_nummer, delay_dict)
+        self.runde = GreenFN(runden_nummer)
         self.timer = 0
         self.spawn_index = 0
 
     def update(self, dt):
         self.timer += dt
 
-        if self.spawn_index < len(self.runde.runde):
-            enemy_type, spawn_time = self.runde.runde[self.spawn_index]
+        if self.spawn_index >= len(self.runde.enemies):
+            return None
 
-            if self.timer >= spawn_time:
-                main.Spiel.spawn_enemy(enemy_type)
-                self.spawn_index += 1
+        enemy_type = self.runde.enemies[self.spawn_index]
+        delay = self.delay_dict[enemy_type]
 
+        if self.timer >= delay:
+            self.timer = 0.0
+            self.spawn_index += 1
+            return enemy_type
+
+        return None
 
 class GreenFN:
-    Runden = {
+    """
+    Reines Datenobjekt für Runden/Wellen.
+    Enthält nur die Reihenfolge der Gegner.
+    """
+
+    RUNDEN = {
         1: [
-            (gegner.EnemyType.WALKER, 0),
-            (gegner.EnemyType.WALKER, 0),
-            (gegner.EnemyType.WALKER, 0),
-            (gegner.EnemyType.WALKER, 0),
-        ]
+            gegner.EnemyType.WALKER,
+            gegner.EnemyType.WALKER,
+            gegner.EnemyType.WALKER,
+            gegner.EnemyType.WALKER,
+        ],
+
+        2: [
+            gegner.EnemyType.WALKER,
+            gegner.EnemyType.RUNNER,
+            gegner.EnemyType.WALKER,
+            gegner.EnemyType.RUNNER,
+        ],
     }
 
-    def __init__(self, nummer, delay_dict=None):
-        """
-        delay_dict: Dictionary mit {EnemyType: spawn_delay_ms}
-        """
+    def __init__(self, nummer: int):
+        if nummer not in GreenFN.RUNDEN:
+            raise ValueError(f"Unbekannte Runde: {nummer}")
+
         self.nummer = nummer
-        self.runde = GreenFN.Runden.get(nummer, [])
-        if delay_dict:
-            self.setze_spawn_delay_pro_typ(delay_dict)
-
-    def setze_spawn_delay_pro_typ(self, delay_dict):
-        """
-        Setzt die Spawnzeiten der Gegner basierend auf ihrem Typ.
-        delay_dict = {EnemyType.WALKER: 100, EnemyType.RUNNER: 50}
-        """
-        letzte_zeit_typ = {}  # Merkt die letzte Spawnzeit pro Typ
-        neue_runde = []
-
-        for enemy_type, _ in self.runde:
-            delay = delay_dict.get(enemy_type, 100)  # Default 100ms
-            start_time = letzte_zeit_typ.get(enemy_type, 0)
-            neue_runde.append((enemy_type, start_time))
-            letzte_zeit_typ[enemy_type] = start_time + delay
-
-        self.runde = neue_runde
+        self.enemies = list(GreenFN.RUNDEN[nummer])

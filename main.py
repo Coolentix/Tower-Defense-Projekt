@@ -20,9 +20,10 @@ class Spiel:
         self.LOADINGSCREEN = "loadingscreen"
         self.TITLESCREEN = "titlescreen"
 
-        self.screen_state = self.LOADINGSCREEN
+        self.screen_state = self.GAME
 
         self.gui = gui.GUIManager(self.screen_state)
+        self.runde = runde.RundenManager(1)
         
         self.game_speed = 1
 
@@ -105,7 +106,7 @@ class Spiel:
         self.screen_state = self.GAME
         self.gui.set_state(self.screen_state)
 
-    def spawn_enemy(self,enemy_type=gegner.EnemyType.WALKER):
+    def spawn_enemy(self, enemy_type=gegner.EnemyType.WALKER):
         #Gegner erstellen
         erster_gegner = gegner.Gegner(enemy_type, self.tilemap,self.tilemap.map_one())
         self.gui.add_game(erster_gegner)
@@ -169,8 +170,10 @@ class Spiel:
         
         self.gui.draw(self.screen)
         self.gui.update(self.dt)
-        self.runde = runde.RundenManager(1)
-        self.runde.update(self.dt)
+
+        enemy = self.runde.update(self.dt)
+        if enemy is not None:
+            self.spawn_enemy(enemy)
 
         self.gui.gegner_kill()
 
