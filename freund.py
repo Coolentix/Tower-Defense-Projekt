@@ -105,9 +105,8 @@ class Projektil(pygame.sprite.Sprite):
         self.speed = 5      # Pixel pro Sekunde
         self.radius = 5
 
-        # image + rect sind Pflicht
-        self.image = pygame.Surface((10, 10), pygame.SRCALPHA)
-        pygame.draw.circle(self.image, (255, 50, 50), (5, 5), self.radius)
+        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/pixilart-drawing.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.radius * 5, self.radius * 5))
         self.rect = self.image.get_rect(center=pos)
 
     def update(self, dt):
@@ -115,7 +114,8 @@ class Projektil(pygame.sprite.Sprite):
         self.rect.center = self.pos
 
     def draw(self, screen):
-        pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
+        screen.blit(self.image, self.rect)    #damit das bild und nicht ein kreis gezeichnet wird
+
 
     def die(self):
         self.kill()
