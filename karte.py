@@ -115,7 +115,7 @@ class TileMap:
         self.tilemap = [[Tile(self.start_x + col*self.TILE_SIZE, self.start_y + row*self.TILE_SIZE, self.TILE_SIZE) for col in range(self.COLS)] for row in range(self.ROWS)]
     
     def map_one(self):
-        path = [(1,0), (1, 1), (1, 2), (1, 3), (1, 4),(1,5),(1,6),(1,7),(1,8),(1,9),(2,9),(3,9),(3,8),(3,7),(3,6),(3,5),(3,4),(4,4),(5,4),(6,4),(7,4),(8,4),(9,4)]
+        path = [(1,0), (1, 1), (1, 2), (1, 3), (1, 4),(1,5),(1,6),(1,7),(1,8),(1,9),(2,9),(3,9),(3,8),(3,7),(3,6),(3,5),(3,4),(4,4),(5,4),(6,4),(7,4),(8,4),(9,4),(10,4),(11,4),(12,4),(13,4),(14,4),(15,4),(16,4),(17,4)]
         # Schleife durch die Koordinaten und Farbe setzen
         for x, y in path:
             self.tilemap[x][y].type = TileType.PATH

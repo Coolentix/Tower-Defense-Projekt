@@ -18,16 +18,23 @@ class Spiel:
         self.GAME = "game"
         self.SETTINGS = "setting"
         self.LOADINGSCREEN = "loadingscreen"
+        self.TITLESCREEN = "titlescreen"
 
         self.screen_state = self.LOADINGSCREEN
 
         self.gui = gui.GUIManager(self.screen_state)
-        #self.gegner = gegener.Gegner()
+        
+        self.game_speed = 1
 
         #Lade Bildschirm
         start_y = self.screen_y // 1 - 170
         spacing = 220
         self.add_loadingscreen_button(900,150,"Press any button", start_y, self.menu_state)
+
+        #Titel Bildschirm
+        #start_y = self.screen_y // 2 - 320
+        #spacing = 220
+        #self.add_titlescreen_button(1900,700,"FRIENDS VS ENEMIES", start_y, self.menu_state)
 
         #Hier Rendern
         #Menu
@@ -60,9 +67,6 @@ class Spiel:
 
         self.running = True
 
-        #Gegner erstellen
-        self.gui.add_game(gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap,self.tilemap.map_one()))
-
         while self.running:
 
             self.dt = clock.tick(60)
@@ -70,6 +74,8 @@ class Spiel:
             #Menu Handle:
             if self.screen_state == self.LOADINGSCREEN:
                 self.loadingscreen()
+            #elif self.screen_state == self.TITLESCREEN:
+                #self.titlescreen()
             elif self.screen_state == self.MENU:
                 self.menu()
             elif self.screen_state == self.GAME:
@@ -107,6 +113,7 @@ class Spiel:
     def settings_state(self):
         self.screen_state = self.SETTINGS
 
+        
     def menu(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -114,8 +121,7 @@ class Spiel:
 
             self.gui.handle_event(event)
 
-        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/image.png").convert_alpha()
-        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/image.png").convert_alpha()
+        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/pixil-frame-0 (2).png").convert_alpha()
         width = self.image.get_width()
         height = self.image.get_height()
         self.image = pygame.transform.scale(self.image, (self.screen_x,self.screen_y))
@@ -148,7 +154,6 @@ class Spiel:
         self.screen.fill((255,255,255))
  
         # HIER DAS SPIEL RENDERN
-        #self.tilemap.draw_tilemap(self.screen)
 
         # Ereignisse abfragen
         # Das pygame.QUIT-Event wird ausgelöst, wenn der Benutzer das Fenster über das Schließen-Symbol (X) beendet.
@@ -159,11 +164,13 @@ class Spiel:
                 if event.key == pygame.K_RETURN:
                     self.spawn_enemy()
 
-            self.gui.handle_event(event)
+            self.gui.handle_event(event) 
 
         
         self.gui.draw(self.screen)
         self.gui.update(self.dt)
+
+        self.gui.gegner_kill()
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
