@@ -1,21 +1,30 @@
-import pygame
 import gegner
-
+import main
 
 class RundenManager:
-    def __init__(self, runden_nummer, delay_dict):
-        #Runde erstellen
-        # 1. Delay pro Gegnertyp definieren
+    def __init__(self, runden_nummer):
         delay_dict = {
             gegner.EnemyType.WALKER: 100,
             gegner.EnemyType.RUNNER: 50,
             gegner.EnemyType.TANK: 200
         }
 
-        # 2. Runde erstellen und Spawnzeiten berechnen
-        runde = gegner.Runde(1, delay_dict)  # <-- Hier wird die Variable "runde" erzeugt
+        self.runde = Runde(runden_nummer, delay_dict)
+        self.timer = 0
+        self.spawn_index = 0
 
-class Runde:
+    def update(self, dt, gegner_liste):
+        self.timer += dt
+
+        if self.spawn_index < len(self.runde.runde):
+            enemy_type, spawn_time = self.runde.runde[self.spawn_index]
+
+            if self.timer >= spawn_time:
+                main.Spiel.spawn_enemy(enemy_type)
+                self.spawn_index += 1
+
+
+class Runden:
     Runden = {
         1: [
             (gegner.EnemyType.WALKER, 0),

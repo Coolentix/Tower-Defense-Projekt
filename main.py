@@ -2,7 +2,7 @@ import pygame
 import karte 
 import gui
 import gegner
-import freund
+import runde
 
 class Spiel:
     def __init__(self):
@@ -105,9 +105,9 @@ class Spiel:
         self.screen_state = self.GAME
         self.gui.set_state(self.screen_state)
 
-    def spawn_enemy(self):
+    def spawn_enemy(self,enemy_type=gegner.EnemyType.WALKER):
         #Gegner erstellen
-        erster_gegner = gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap,self.tilemap.map_one())
+        erster_gegner = gegner.Gegner(enemy_type, self.tilemap,self.tilemap.map_one())
         self.gui.add_game(erster_gegner)
 
     def settings_state(self):
@@ -169,6 +169,8 @@ class Spiel:
         
         self.gui.draw(self.screen)
         self.gui.update(self.dt)
+        self.runde = runde.RundenManager(1)
+        self.runde.update(self.dt, self.gui.gegner_list)
 
         self.gui.gegner_kill()
 
