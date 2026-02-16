@@ -123,15 +123,22 @@ class GUIManager:
         for e in self.elements.get("game", []):
             if isinstance(e, freund.Freund):
                 bullet_group.add(*e.projectiles_return())
-        
-        hits = pygame.sprite.groupcollide(bullet_group, self.gegner_list, True, False)
 
+        # groupcollide finds all collisions
+        hits = pygame.sprite.groupcollide(
+            bullet_group,
+            self.gegner_list,
+            True,   # remove bullet on collision
+            False   # don't automatically remove enemies
+        )
+
+        # Kill only the first enemy hit per bullet
         for bullet, enemies in hits.items():
-            for gegner in enemies:
-                gegner.die()  # entfernt aus Gruppe
+            if enemies:
+                gegner = enemies[0]
+                gegner.die()  # remove from enemy group
                 if gegner in self.elements[self.state]:
-                    self.elements[self.state].remove(gegner)  # entfernt auch aus Master-Liste
-            bullet.die()
+                    self.elements[self.state].remove(gegner)  # remove from master list
 
 class Text(GUIElement):     
     def __init__(self, x, y,text,font_size=24,color=(255, 255, 255),font_path=None,center=False):         

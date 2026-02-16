@@ -3,8 +3,8 @@ import gegner
 class RundenManager:
     def __init__(self, runden_nummer):
         self.delay_dict = {
-            gegner.EnemyType.WALKER: 500,
-            gegner.EnemyType.RUNNER: 300,
+            gegner.EnemyType.WALKER: 5,
+            gegner.EnemyType.RUNNER: 5,
             gegner.EnemyType.TANK: 1500
         }
 
@@ -48,6 +48,7 @@ class GreenFN:
             gegner.EnemyType.WALKER,
             gegner.EnemyType.RUNNER,
         ],
+        3: [gegner.EnemyType.RUNNER for i in range(1000)]
     }
 
     def __init__(self, nummer: int):

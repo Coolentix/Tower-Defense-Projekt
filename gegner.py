@@ -96,6 +96,8 @@ class Gegner(pygame.sprite.Sprite):
     
     def die(self):
         self.kill()
+        bullet_sound = pygame.mixer.Sound("../Tower-Defense-Projekt/Sounds/bullet1.wav")#.set_volume(0.1)
+        bullet_sound.play()
 
 class EnemyType:
     WALKER = 0

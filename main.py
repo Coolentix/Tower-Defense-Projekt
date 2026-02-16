@@ -8,6 +8,7 @@ class Spiel:
     def __init__(self):
         # pygame setup
         pygame.init()
+        pygame.mixer.init()
 
         title = pygame.display.set_caption("Tower Defense")
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -180,7 +181,7 @@ class Spiel:
 
         if self.runde:
             enemy = self.runde.update(self.dt)
-            if enemy is not None:
+            if enemy != None:
                 self.spawn_enemy(enemy)
 
         #self.runden_start()
