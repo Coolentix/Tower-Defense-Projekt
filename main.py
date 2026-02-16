@@ -23,9 +23,10 @@ class Spiel:
         self.screen_state = self.GAME
 
         self.gui = gui.GUIManager(self.screen_state)
-        self.runde = runde.RundenManager(1)
         
         self.game_speed = 1
+        self.runden_anzahl = 0
+        self.runde = None
 
         #Lade Bildschirm
         start_y = self.screen_y // 1 - 170
@@ -64,6 +65,7 @@ class Spiel:
         self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement2)) #Hier dann anderer Typ
         self.gui.add_game(gui.Button(x=panel_x,y=button_y + button_width + gap,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement3))
         self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y + button_width + gap,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement4))
+        self.gui.add_game(gui.Button(x=self.screen_x - 100 - gap,y=self.screen_y - 100 - gap,width=100,height=100,color=(0, 0, 0),action=self.runden_start))
         clock = pygame.time.Clock()
 
         self.running = True
@@ -110,6 +112,11 @@ class Spiel:
         #Gegner erstellen
         erster_gegner = gegner.Gegner(enemy_type, self.tilemap,self.tilemap.map_one())
         self.gui.add_game(erster_gegner)
+
+    def runden_start(self):
+        self.runden_anzahl += 1
+        self.runde = runde.RundenManager(self.runden_anzahl)
+        print(self.runden_anzahl)
 
     def settings_state(self):
         self.screen_state = self.SETTINGS
@@ -171,9 +178,12 @@ class Spiel:
         self.gui.draw(self.screen)
         self.gui.update(self.dt)
 
-        enemy = self.runde.update(self.dt)
-        if enemy is not None:
-            self.spawn_enemy(enemy)
+        if self.runde:
+            enemy = self.runde.update(self.dt)
+            if enemy is not None:
+                self.spawn_enemy(enemy)
+
+        #self.runden_start()
 
         self.gui.gegner_kill()
 
