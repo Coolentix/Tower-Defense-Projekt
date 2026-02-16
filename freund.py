@@ -5,7 +5,7 @@ class Freund:
         self.schaden = 0
         self.rasse = ""
         self.row, self.col = map.ROWS, map.COLS
-        self.pos = pygame.math.Vector2(position)
+        self.pos = pygame.math.Vector2(position)    #--> mittig machen
         self.size = (map.TILE_SIZE,map.TILE_SIZE)
         self.image_path = image_path
 
@@ -17,6 +17,8 @@ class Freund:
         self.damage = self.freund_Stats["damage"]
         self.kosten = self.freund_Stats["kosten"]
 
+        self.angle = 0
+
         self.target = None
         self.timer=0
         self.projectiles = pygame.sprite.Group()  
@@ -25,13 +27,13 @@ class Freund:
         if isinstance(image_path, str):
             self.image = pygame.image.load(image_path).convert_alpha()
             self.image = pygame.transform.scale(self.image, self.size)
-            print("bild wird gesetzt")
         else:
             # Fallback (sichtbar zum Debuggen)
             self.image = pygame.Surface(self.size, pygame.SRCALPHA)
             self.image.fill((0, 200, 0))
 
-        self.rect = self.image.get_rect(center=self.pos)
+        self.new_angle_image = self.image
+        self.rect = self.new_angle_image.get_rect(center=self.pos)
 
     def update(self, dt, gegner_liste):
         # Timer hochzählen
@@ -44,8 +46,7 @@ class Freund:
                 self.target = None
             # Gegner außerhalb der Reichweite → Ziel freigeben
             elif pygame.math.Vector2(self.rect.center).distance_to(
-                self.target.rect.center
-            ) > self.range:
+                self.target.rect.center) > self.range:
                 self.target = None
 
         # ---- Neues Ziel suchen ----
@@ -76,15 +77,19 @@ class Freund:
         start_pos = pygame.math.Vector2(self.pos)
         ziel_pos = pygame.math.Vector2(self.target.get_aim_point())
 
+        self.angle = (ziel_pos - start_pos).angle_to(pygame.math.Vector2(1, 0))
+        self.new_angle_image = pygame.transform.rotate(self.image, self.angle-90)
+        self.rect = self.new_angle_image.get_rect(center=self.pos)
+
         richtung = (ziel_pos - start_pos).normalize()
 
-        p = Projektil(start_pos, richtung, ziel_pos)
+        p = Projektil(self.rect.center, richtung, ziel_pos)
         self.projectiles.add(p)
 
     def draw(self,screen):
         #pygame.draw.circle(screen, (50, 200, 50), self.pos, 15)
         pygame.draw.circle(screen, (50, 100, 50), self.rect.center, self.range, 1)
-        screen.blit(self.image, self.rect)
+        screen.blit(self.new_angle_image, self.rect)
 
         for p in self.projectiles:
             p.draw(screen)
@@ -108,6 +113,11 @@ class Projektil(pygame.sprite.Sprite):
         self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/pixilart-drawing.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.radius * 5, self.radius * 5))
         self.rect = self.image.get_rect(center=pos)
+
+        self.rect = self.image.get_rect(center=self.pos)
+        self.angle = (self.gegner - self.pos).angle_to(pygame.math.Vector2(1, 0))
+        self.image = pygame.transform.rotate(self.image, self.angle-90)
+
 
     def update(self, dt):
         self.pos += self.richtung * self.speed * dt

@@ -2,7 +2,7 @@ import pygame
 import karte 
 import gui
 import gegner
-import freund
+import runde
 
 class Spiel:
     def __init__(self):
@@ -67,55 +67,6 @@ class Spiel:
 
         self.running = True
 
-        #Runde erstellen
-        #self.gui.add_game(gegner.Runde(gegner.Runde.runde1, self.tilemap,self.tilemap.map_one(), (self.screen_x, self.screen_y)))
-
-        # 1. Delay pro Gegnertyp definieren
-        delay_dict = {
-            gegner.EnemyType.WALKER: 100,
-            gegner.EnemyType.RUNNER: 50,
-            gegner.EnemyType.TANK: 200
-        }
-
-        # 2. Runde erstellen und Spawnzeiten berechnen
-        runde = gegner.Runde(1, delay_dict)  # <-- Hier wird die Variable "runde" erzeugt
-
-        # 3. Spawner erstellen
-        """
-        self.spawner = GegnerSpawner(
-            runde.runde,               # Liste der Gegner + Spawnzeiten
-            self.tilemap,
-            self.tilemap.map_one(),
-            (self.screen_x, self.screen_y),
-            self.gui
-)
-"""
-        # Vorbereitung
-        pending = list(runde.runde)  # Gegner, die noch kommen
-        active_enemies = []
-        timer = 0
-
-        # Im Game-Loop:
-        delta_time = clock.get_time() / 1000  # Sekunden seit letztem Frame
-        timer += delta_time * 1000           # in Millisekunden
-
-        # Gegner spawnen, wenn Zeit erreicht
-        while pending and pending[0][1] <= timer:
-            enemy_type, spawn_time = pending.pop(0)
-            enemy = gegner.Gegner(
-                enemy_type,
-                self.tilemap,
-                self.tilemap.map_one(),
-                "../Tower-Defense-Projekt/bilder/pixil-frame-0.png"
-            )
-            self.gui.add_game(enemy)
-            active_enemies.append(enemy)
-
-        # Alle aktiven Gegner updaten
-        for enemy in active_enemies:
-            enemy.update(delta_time)
-
-
         while self.running:
 
             self.dt = clock.tick(60)
@@ -154,9 +105,9 @@ class Spiel:
         self.screen_state = self.GAME
         self.gui.set_state(self.screen_state)
 
-    def spawn_enemy(self):
+    def spawn_enemy(self,enemy_type=gegner.EnemyType.WALKER):
         #Gegner erstellen
-        erster_gegner = gegner.Gegner(gegner.EnemyType.WALKER, self.tilemap,self.tilemap.map_one())
+        erster_gegner = gegner.Gegner(enemy_type, self.tilemap,self.tilemap.map_one())
         self.gui.add_game(erster_gegner)
 
     def settings_state(self):
@@ -218,6 +169,8 @@ class Spiel:
         
         self.gui.draw(self.screen)
         self.gui.update(self.dt)
+        self.runde = runde.RundenManager(1)
+        self.runde.update(self.dt, self.gui.gegner_list)
 
         self.gui.gegner_kill()
 
