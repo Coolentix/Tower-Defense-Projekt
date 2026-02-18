@@ -23,6 +23,7 @@ class Spiel:
         self.screen_state = self.LOADINGSCREEN
 
         self.gui = gui.GUIManager(self.screen_state)
+        self.gui.geld
         
         self.game_speed = 1
 
@@ -63,6 +64,7 @@ class Spiel:
         self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement2)) #Hier dann anderer Typ
         self.gui.add_game(gui.Button(x=panel_x,y=button_y + button_width + gap,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement3))
         self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y + button_width + gap,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement4))
+        self.gui.add_game(gui.Text(x=self.screen_x // 2,y=50 // 2,text="0",text_function=lambda: self.gui.geld,font_size=50,color=(0, 0, 0),center=True))
         clock = pygame.time.Clock()
 
         self.running = True
@@ -91,6 +93,7 @@ class Spiel:
             clock.tick(60)  # limitiert FPS auf 60
 
         pygame.quit()
+
 
 #Methoden
     def quit_game(self):
@@ -204,7 +207,7 @@ class Spiel:
 
         self.gui.add_loadingscreen(gui.Button(x=self.screen_x // 2 - BUTTON_W // 2,y=y,width=BUTTON_W,height=BUTTON_H,color=(0, 0, 0),action=action))
 
-        self.gui.add_loadingscreen(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text,font_size=100,color=(255, 255, 255),center=True))
+        self.gui.add_loadingscreen(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text  ,font_size=100,color=(255, 255, 255),center=True))
 
     def enable_friend_placement1(self):
         self.gui.placing_friend1 = True

@@ -129,7 +129,7 @@ class freund_type:
         print("Hallo")
         
         self.freund_Stats = {
-            0: {"range": 750, "damage": 2, "fire_rate": 200, "kosten": 400},
+            0: {"range": 750, "damage": 2, "fire_rate": 1, "kosten": 400},
             1: {"range": 400, "damage": 4, "fire_rate": 100, "kosten": 700},
             2: {"range": 200, "damage": 1, "fire_rate": 50, "kosten": 600},
             3: {"range": 250, "damage": 1, "fire_rate": 100, "kosten": 100}
