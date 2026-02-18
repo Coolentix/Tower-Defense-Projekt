@@ -11,8 +11,28 @@ class Spiel:
         pygame.mixer.init()
 
         title = pygame.display.set_caption("Tower Defense")
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        self.screen_x, self.screen_y = self.screen.get_size()
+        info = pygame.display.Info()
+        self.monitor_w = info.current_w
+        self.monitor_h = info.current_h
+        if self.monitor_w / self.monitor_h > 16/9:
+            self.screen_y = self.monitor_h
+            self.screen_x = int(self.screen_y * 16/9)
+        else:
+            self.screen_x = self.monitor_w
+            self.screen_y = int(self.screen_x * 9/16)
+
+        # 3️⃣ Screen erstellen (GANZ WICHTIG)
+        self.screen = pygame.display.set_mode(
+            (self.monitor_w, self.monitor_h),
+            pygame.NOFRAME
+        )
+
+        # 4️⃣ Game Surface erstellen
+        self.game_surface = pygame.Surface((self.screen_x, self.screen_y))
+
+        # 5️⃣ Offset berechnen
+        self.x_offset = (self.monitor_w - self.screen_x) // 2
+        self.y_offset = (self.monitor_h - self.screen_y) // 2
 
         
         self.MENU = "menu"
@@ -62,7 +82,7 @@ class Spiel:
 
         self.gui.add_game(gui.Button(x=self.screen_x-55,y=gap,width=45,height=45,color=(255, 0, 0),action=self.quit_game))
         self.gui.add_game(gui.Checkbox(x=self.tilemap.TILE_SIZE*self.tilemap.COLS+20,y=10,width=45,height=45,color=(0, 0, 0),state=0,action=self.tilemap.grid_ON_OFF))
-        self.gui.add_game(gui.Button(x=panel_x,y=button_y,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement1))
+        self.gui.add_game(gui.Button(x=panel_x,y=button_y,width=button_width,height=button_height,color=(0, 0, 0),image_path="../Tower-Defense-Projekt/bilder/Ameise.gif",action=self.enable_friend_placement1))
         self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement2)) #Hier dann anderer Typ
         self.gui.add_game(gui.Button(x=panel_x,y=button_y + button_width + gap,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement3))
         self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y + button_width + gap,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement4))

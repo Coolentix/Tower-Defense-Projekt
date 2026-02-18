@@ -10,11 +10,12 @@ class GUIElement:
         pass
 
 
-class Button:
-    def __init__(self, x, y, width, height, color, alpha=255, action=None):
+class Button(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, color, alpha=255, image_path=None,action=None):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color  # RGB
         self.alpha = alpha
+        self.image_path = image_path
         self.action = action
 
         # Transparente Surface
@@ -33,7 +34,13 @@ class Button:
         self.surface.fill((0, 0, 0, 0))
 
         # Button auf die Surface zeichnen
-        pygame.draw.rect(self.surface, self.color, self.surface.get_rect())
+        if self.image_path:
+            image = pygame.image.load(self.image_path).convert_alpha()
+            image = pygame.transform.scale(image, (self.rect.width, self.rect.height))
+            self.surface.fill((200,200,200))  # Grauer Hintergrund für bessere Sichtbarkeit
+            self.surface.blit(image, (0, 0))
+        else:
+            pygame.draw.rect(self.surface, self.color, self.surface.get_rect())
 
         # Surface auf den Screen zeichnen
         screen.blit(self.surface, self.rect.topleft)

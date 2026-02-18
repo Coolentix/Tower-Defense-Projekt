@@ -53,7 +53,8 @@ class GreenFN:
 
     def __init__(self, nummer: int):
         if nummer not in GreenFN.RUNDEN:
-            raise ValueError(f"Unbekannte Runde: {nummer}")
+            self.enemies = []
+            return
 
         self.nummer = nummer
         self.enemies = list(GreenFN.RUNDEN[nummer])
