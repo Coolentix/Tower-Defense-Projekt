@@ -137,7 +137,7 @@ class GUIManager:
                 if gegner in self.elements[self.state]:
                     self.elements[self.state].remove(gegner)  # entfernt auch aus Master-Liste
                     print("Geld vorher:", self.geld)
-                    self.geld += 1000
+                    self.geld += 1
                     print("Geld nachher:", self.geld)
                     print(self.geld)
             bullet.die()

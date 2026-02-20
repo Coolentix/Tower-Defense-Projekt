@@ -131,6 +131,7 @@ class TileMap:
         tile.border = 0
 
         self.gui.add_game(freund.Freund(self,(tile.rect.center), f_typ))
+        self.gui.geld-=0
 
     def place_friend2(self, row, col, f_typ=1):
         tile = self.tilemap[row][col]
@@ -141,6 +142,7 @@ class TileMap:
         tile.border = 0
 
         self.gui.add_game(freund.Freund(self,(tile.rect.center), f_typ))
+        self.gui.geld-=25
 
     def place_friend3(self, row, col, f_typ=2):
 
@@ -151,7 +153,7 @@ class TileMap:
         tile.border = 0
 
         self.gui.add_game(freund.Freund(self,(tile.rect.center), f_typ))
-
+        self.gui.geld-=45
 
     def place_friend4(self, row, col, f_typ=3):
         tile = self.tilemap[row][col]
@@ -162,6 +164,7 @@ class TileMap:
         tile.border = 0
 
         self.gui.add_game(freund.Freund(self,(tile.rect.center), f_typ))
+        self.gui.geld-=60
 
 class TileType:
     EMPTY = 0
