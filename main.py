@@ -3,6 +3,7 @@ import karte
 import gui
 import gegner
 import runde
+import os
 
 class Spiel:
     def __init__(self):
@@ -15,22 +16,20 @@ class Spiel:
         self.monitor_w = info.current_w
         self.monitor_h = info.current_h
         if self.monitor_w / self.monitor_h > 16/9:
-            self.screen_y = self.monitor_h
+            self.screen_y = int(self.monitor_h)
             self.screen_x = int(self.screen_y * 16/9)
         else:
-            self.screen_x = self.monitor_w
+            self.screen_x = int(self.monitor_w)
             self.screen_y = int(self.screen_x * 9/16)
 
-        # 3️⃣ Screen erstellen (GANZ WICHTIG)
-        self.screen = pygame.display.set_mode(
+        #Screen erstellen
+        self.true_screen = pygame.display.set_mode(
             (self.monitor_w, self.monitor_h),
             pygame.NOFRAME
         )
+        self.screen = pygame.Surface((self.screen_x, self.screen_y))
 
-        # 4️⃣ Game Surface erstellen
-        self.game_surface = pygame.Surface((self.screen_x, self.screen_y))
-
-        # 5️⃣ Offset berechnen
+        #Offset berechnen
         self.x_offset = (self.monitor_w - self.screen_x) // 2
         self.y_offset = (self.monitor_h - self.screen_y) // 2
 
@@ -110,6 +109,7 @@ class Spiel:
             # Den Bildschirm mit einer Farbe füllen, um alles aus dem letzten Frame zu löschen.
 
             # Das Display mit flip() aktualisieren, um das Gezeichnete auf dem Bildschirm anzuzeigen.
+            self.true_screen.blit(self.screen, (self.x_offset, self.y_offset))
             pygame.display.flip()
 
             clock.tick(60)  # limitiert FPS auf 60
@@ -138,6 +138,17 @@ class Spiel:
         self.runden_anzahl += 1
         self.runde = runde.RundenManager(self.runden_anzahl)
         print(self.runden_anzahl)
+
+    def get_adjusted_event(self, event):
+        """Korrigiert die Mausposition in Events basierend auf dem Screen-Offset."""
+        if hasattr(event, "pos"):
+            # Wir erstellen ein neues Event-Objekt mit korrigierten Koordinaten
+            pos = (event.pos[0] - self.x_offset, event.pos[1] - self.y_offset)
+            if event.type in [pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION]:
+                # Ein neues Event mit den angepassten Koordinaten erzeugen
+                new_event = pygame.event.Event(event.type, {"pos": pos, "button": getattr(event, 'button', None)})
+                return new_event
+        return event
 
     def settings_state(self):
         self.screen_state = self.SETTINGS
@@ -193,7 +204,8 @@ class Spiel:
                 if event.key == pygame.K_RETURN:
                     self.spawn_enemy()
 
-            self.gui.handle_event(event) 
+            adjusted_event = self.get_adjusted_event(event)
+            self.gui.handle_event(adjusted_event) 
 
         
         self.gui.draw(self.screen)
