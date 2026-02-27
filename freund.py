@@ -9,7 +9,7 @@ class Freund:
         self.size = (map.TILE_SIZE,map.TILE_SIZE)
         self.image_path = image_path
 
-        self.freund_type = freund_type()
+        self.freund_type = freund_type() 
         self.freund_Stats = self.freund_type.freund_Stats[f_typ]
 
         self.range = self.freund_Stats["range"] //2
@@ -142,7 +142,7 @@ class freund_type:
             0: {"range": 750, "damage": 2, "fire_rate": 200, "kosten": 400},
             1: {"range": 400, "damage": 4, "fire_rate": 100, "kosten": 700},
             2: {"range": 200, "damage": 1, "fire_rate": 50, "kosten": 600},
-            3: {"range": 250, "damage": 1, "fire_rate": 100, "kosten": 100}
+            3: {"range": 600, "damage": 0.1, "fire_rate": 0.1, "kosten": 1000}
         }
     def draw(self,screen):
         pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)

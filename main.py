@@ -47,7 +47,7 @@ class Spiel:
         #Spiel
         self.tilemap = karte.TileMap(self.screen.get_size(),2*9,14*2,self.gui)
         self.gui.add_game(self.tilemap)        # Kartenobjekt erzeugen (erst hier weil vorher screen size nicht bekannt)
-        self.tilemap.map_one()
+        self.tilemap.map_two()
 
         panel_x = self.tilemap.TILE_SIZE * self.tilemap.COLS + 20
         panel_y = self.tilemap.TILE_SIZE * self.tilemap.ROWS + 20
@@ -107,7 +107,7 @@ class Spiel:
 
     def spawn_enemy(self,enemy_type=gegner.EnemyType.WALKER):
         #Gegner erstellen
-        erster_gegner = gegner.Gegner(enemy_type, self.tilemap,self.tilemap.map_one())
+        erster_gegner = gegner.Gegner(enemy_type, self.tilemap,self.tilemap.map_two())
         self.gui.add_game(erster_gegner)
 
     def settings_state(self):
@@ -169,8 +169,8 @@ class Spiel:
         
         self.gui.draw(self.screen)
         self.gui.update(self.dt)
-        self.runde = runde.RundenManager(1)
-        self.runde.update(self.dt, self.gui.gegner_list)
+#        self.runde = runde.RundenManager(1)
+    #    self.runde.update(self.dt, self.gui.gegner_list)
 
         self.gui.gegner_kill()
 
