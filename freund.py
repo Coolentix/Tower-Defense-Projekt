@@ -116,7 +116,7 @@ class Projektil(pygame.sprite.Sprite):
 
     def draw(self, screen):
         pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
-
+        
     def die(self):
         self.kill()
 
@@ -134,6 +134,4 @@ class freund_type:
             2: {"range": 200, "damage": 1, "fire_rate": 50, "kosten": 600},
             3: {"range": 250, "damage": 1, "fire_rate": 100, "kosten": 100}
         }
-    def draw(self,screen):
-        pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
-
+    

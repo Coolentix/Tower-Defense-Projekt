@@ -70,7 +70,7 @@ class Spiel:
         self.running = True
 
         while self.running:
-
+            
             self.dt = clock.tick(60)
 
             #Menu Handle:
@@ -82,6 +82,11 @@ class Spiel:
                 self.menu()
             elif self.screen_state == self.GAME:
                 self.game()
+                key = key.get_pressed()
+                if key[pygame.K_e] == True:
+                    pygame.draw.circle(self.screen, (50, 100, 50), self.freund.rect.center, self.freund.range, 1)
+                    self.screen.blit(self.image, self.rect)
+
             elif self.screen_state == self.SETTINGS:
                 self.settings()
 
