@@ -58,6 +58,10 @@ class Freund:
             self.shoot()
             self.timer = 0
 
+            animation = Animation("../Tower-Defense-Projekt/sprites/Animation OP (1).png")
+            animation.load_frames(animation.sheet, 50, 50, 29, 1)
+            #self.screen.blit(animation.frames[0], self.rect)
+
         # ---- Projectiles updaten ----
         for p in self.projectiles.sprites():
             p.update(dt)
@@ -147,3 +151,18 @@ class freund_type:
     def draw(self,screen):
         pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
 
+
+class Animation:
+    def __init__(self,filename):
+         self.sheet = pygame.image.load(filename).convert_alpha()
+         self.frames = []
+    
+    def load_frames(self, sheet, frame_width, frame_height, cols,total_frames):
+        for i in range(total_frames):
+            # Berechne die Position des Frames auf dem Sheet
+            x = (i % cols) * frame_width
+            y = (i // cols) * frame_height
+            # Schneide das Frame aus
+            frame = sheet.subsurface(pygame.Rect(x, y, frame_width, frame_height))
+            self.frames.append(frame)
+        return self.frames

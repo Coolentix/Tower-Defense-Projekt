@@ -1,3 +1,5 @@
+from fileinput import filename
+
 import pygame
 import karte 
 import gui
