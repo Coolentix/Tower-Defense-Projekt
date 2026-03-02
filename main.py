@@ -43,7 +43,7 @@ class Spiel:
         self.screen_state = self.GAME
 
         self.gui = gui.GUIManager(self.screen_state)
-        
+
         self.game_speed = 1
         self.runden_anzahl = 0
         self.runde = None

@@ -9,7 +9,7 @@ class Freund:
         self.size = (map.TILE_SIZE,map.TILE_SIZE)
         self.image_path = image_path
 
-        self.freund_type = freund_type()
+        self.freund_type = freund_type() 
         self.freund_Stats = self.freund_type.freund_Stats[f_typ]
 
         self.range = self.freund_Stats["range"] //2
@@ -110,9 +110,8 @@ class Projektil(pygame.sprite.Sprite):
         self.speed = 5      # Pixel pro Sekunde
         self.radius = 5
 
-        # image + rect sind Pflicht
-        self.image = pygame.Surface((1, 1), pygame.SRCALPHA)
-        pygame.draw.circle(self.image, (255, 50, 50), (5, 5), self.radius)
+        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/pixilart-drawing.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.radius * 5, self.radius * 5))
         self.rect = self.image.get_rect(center=pos)
 
         self.rect = self.image.get_rect(center=self.pos)
@@ -125,7 +124,8 @@ class Projektil(pygame.sprite.Sprite):
         self.rect.center = self.pos
 
     def draw(self, screen):
-        pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
+        screen.blit(self.image, self.rect)    #damit das bild und nicht ein kreis gezeichnet wird
+
 
     def die(self):
         self.kill()
@@ -142,7 +142,7 @@ class freund_type:
             0: {"range": 750, "damage": 2, "fire_rate": 200, "kosten": 400},
             1: {"range": 400, "damage": 4, "fire_rate": 100, "kosten": 700},
             2: {"range": 200, "damage": 1, "fire_rate": 50, "kosten": 600},
-            3: {"range": 250, "damage": 1, "fire_rate": 100, "kosten": 100}
+            3: {"range": 600, "damage": 0.1, "fire_rate": 0.1, "kosten": 1000}
         }
     def draw(self,screen):
         pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)
