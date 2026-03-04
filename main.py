@@ -28,6 +28,9 @@ class Spiel:
         
         self.game_speed = 1
 
+        self.active_friend = None
+        self.global_range = False
+
         #Lade Bildschirm
         start_y = self.screen_y // 1 - 170
         spacing = 220
@@ -83,18 +86,6 @@ class Spiel:
                 self.menu()
             elif self.screen_state == self.GAME:
                 self.game()
-                key = pygame.key.get_pressed()
-                print(key)
-                if key[pygame.K_e] == True:
-                    
-                    self.screen.blit(self.image, self.rect)
-                    for i in range(0, len(self.gui.elements["game"])):
-                        if isinstance(self.gui.elements["game"][i],freund.Freund):
-                            pygame.draw.circle(self.screen, (50, 100, 50), self.rect.center, self.gui.elements["game"][i].range, 1)
-                            self.screen.blit(self.image, self.gui.elements["game"][i].pos)
-
-                                   
-                
             elif self.screen_state == self.SETTINGS:
                 self.settings()
 
@@ -179,9 +170,21 @@ class Spiel:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.spawn_enemy()
+                if event.key == pygame.K_e :
+                    #print("E gedrückt")
+                    for element in self.gui.elements["game"]:
+                        if isinstance(element, freund.Freund):
+                            self.active_friend = element
+                            print(element.range_active())
+                            if not element.range_active():
+                                element.show_range = not element.show_range
+                                #self.tilemap.range(element.range)
+                            else:
+                                element.show_range = False
+                                #self.tilemap.range(element.range)
+                            
 
             self.gui.handle_event(event) 
-
         
         self.gui.draw(self.screen)
         self.gui.update(self.dt)

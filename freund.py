@@ -1,7 +1,7 @@
 import pygame
 
 class Freund:
-    def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif",game_speed=0.5):
+    def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif",game_speed=0.5, show_range=False):
         self.schaden = 0
         self.rasse = ""
         self.row, self.col = map.ROWS, map.COLS
@@ -20,6 +20,8 @@ class Freund:
         self.target = None
         self.timer=0
         self.projectiles = pygame.sprite.Group()  
+
+        self.show_range = show_range   # Toggle-Zustand
 
         # ---- Bild ----
         if isinstance(image_path, str):
@@ -83,11 +85,17 @@ class Freund:
 
     def draw(self,screen):
         #pygame.draw.circle(screen, (50, 200, 50), self.pos, 15)
-        pygame.draw.circle(screen, (50, 100, 50), self.rect.center, self.range, 1)
+        #pygame.draw.circle(screen, (50, 100, 50), self.rect.center, self.range, 1)
         screen.blit(self.image, self.rect)
+        
+        if self.show_range:
+            pygame.draw.circle(screen, (50, 100, 50), self.rect.center, self.range, 1)
 
         for p in self.projectiles:
             p.draw(screen)
+    
+    def range_active(self):
+        return self.show_range
 
     def projectiles_return(self):
         return self.projectiles
