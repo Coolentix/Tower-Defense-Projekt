@@ -1,4 +1,5 @@
 import pygame
+from animation import SpriteAnimation
 
 class Freund:
     def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif",game_speed=0.5):
@@ -21,7 +22,16 @@ class Freund:
 
         self.target = None
         self.timer=0
-        self.projectiles = pygame.sprite.Group()  
+        self.projectiles = pygame.sprite.Group() 
+
+        self.shoot_animation = SpriteAnimation(
+            "H:\SPIEL\Tower-Defense-Projekt\sprites\Animation OP (1).png",
+            50, 50,      # Frame Größe
+            29,           # Anzahl Frames
+            40          # Geschwindigkeit (ms)
+        )
+
+        self.is_shooting = False 
 
         # ---- Bild ----
         if isinstance(image_path, str):
@@ -64,6 +74,13 @@ class Freund:
             if not p.alive():
                 self.projectiles.kill(p)
 
+        # ---- Schuss Animation updaten ----
+        if self.is_shooting:
+            self.shoot_animation.update(dt)
+
+            if self.shoot_animation.current_frame == self.shoot_animation.frame_count - 1:
+                self.is_shooting = False
+
     def find_target(self, gegner_liste):
         turm_pos = pygame.math.Vector2(self.rect.center)
         for g in gegner_liste:
@@ -86,10 +103,22 @@ class Freund:
         p = Projektil(self.rect.center, richtung, ziel_pos)
         self.projectiles.add(p)
 
+        if not self.is_shooting:
+            self.is_shooting = True
+            self.shoot_animation.current_frame = 0
+            self.shoot_animation.timer = 0
+
     def draw(self,screen):
         #pygame.draw.circle(screen, (50, 200, 50), self.pos, 15)
         pygame.draw.circle(screen, (50, 100, 50), self.rect.center, self.range, 1)
-        screen.blit(self.new_angle_image, self.rect)
+
+        if self.is_shooting:
+            frame = self.shoot_animation.frames[self.shoot_animation.current_frame]
+            rotated = pygame.transform.rotate(frame, self.angle-90)
+            rect = rotated.get_rect(center=self.pos)
+            screen.blit(rotated, rect)
+        else:
+            screen.blit(self.new_angle_image, self.rect)
 
         for p in self.projectiles:
             p.draw(screen)
@@ -142,7 +171,7 @@ class freund_type:
             0: {"range": 750, "damage": 2, "fire_rate": 200, "kosten": 400},
             1: {"range": 400, "damage": 4, "fire_rate": 100, "kosten": 700},
             2: {"range": 200, "damage": 1, "fire_rate": 50, "kosten": 600},
-            3: {"range": 600, "damage": 0.1, "fire_rate": 0.1, "kosten": 1000}
+            3: {"range": 600, "damage": 0.1, "fire_rate": 1000, "kosten": 1000}
         }
     def draw(self,screen):
         pygame.draw.circle(screen, (255, 50, 50), self.pos, self.radius)

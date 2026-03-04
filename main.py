@@ -3,6 +3,7 @@ import karte
 import gui
 import gegner
 import runde
+from animation import SpriteAnimation
 
 class Spiel:
     def __init__(self):
@@ -25,6 +26,14 @@ class Spiel:
         self.gui = gui.GUIManager(self.screen_state)
 
         self.game_speed = 1
+
+        # EINMAL im __init__ von Spiel:
+        self.enemy_animation = SpriteAnimation(
+            "H:\SPIEL\Tower-Defense-Projekt\sprites\Animation OP (1).png",  # dein Sprite Sheet
+            50, 50,                   # Frame Größe
+            29,                        # Anzahl Frames
+            1000                  # Geschwindigkeit (ms pro Frame)
+        )
 
         #Lade Bildschirm
         start_y = self.screen_y // 1 - 170
@@ -135,7 +144,6 @@ class Spiel:
         #    self.game_state()
 
     def loadingscreen(self):
-        self.screen.fill((255,255,255))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -146,6 +154,12 @@ class Spiel:
             
             self.gui.handle_event(event)
 
+        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/TITLE.png").convert_alpha()
+        width = self.image.get_width()
+        height = self.image.get_height()
+        self.image = pygame.transform.scale(self.image, (self.screen_x,self.screen_y))
+        self.rect = self.image.get_rect(center=(self.screen_x // 2, self.screen_y // 2))
+        self.screen.blit(self.image, self.rect)
 
         self.gui.draw(self.screen)
 
@@ -163,6 +177,9 @@ class Spiel:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.spawn_enemy()
+
+            self.enemy_animation.update(self.dt)
+            self.enemy_animation.draw(self.screen, 300, 300)
 
             self.gui.handle_event(event) 
 
@@ -229,5 +246,6 @@ class Spiel_Attribute:
         leben = 0
         score = 0
         zeit = 0
+
 
 Spiel()
