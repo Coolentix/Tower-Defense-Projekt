@@ -1,6 +1,8 @@
 import pygame
 import gegner
 import freund
+import tkinter as tk
+import time
 
 class GUIElement:
     def draw(self, screen):
@@ -19,7 +21,6 @@ class Button:
 
         # Transparente Surface
         self.surface = pygame.Surface((width, height), pygame.SRCALPHA)
-        self.surface.set_alpha(self.alpha)
         self.surface.set_alpha(self.alpha)
 
     def draw(self, screen):
@@ -42,8 +43,6 @@ class Button:
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
-                if self.action:
-                    self.action()
                 if self.action:
                     self.action()
 
@@ -70,13 +69,16 @@ class Checkbox:
 
 class GUIManager:     
     def __init__(self,screen_state):         
+        print("GUIManager wurde neu erstellt!")
         self.elements = {"menu": [],"game": [], "loadingscreen": []}         
         self.state = screen_state         
         self.placing_friend1 = False
         self.placing_friend2 = False           
         self.placing_friend3 = False
         self.placing_friend4 = False
-        self.gegner_list = pygame.sprite.Group()     
+        self.gegner_list = pygame.sprite.Group()    
+        self.geld=0 
+
     def set_state(self, state):         
         self.state = state     
 
@@ -92,16 +94,19 @@ class GUIManager:
    # def add_titlescreen(self, element):
     #    self.elements["titlescreen"].append(element)
 
-    def draw(self, screen):         
-        for e in self.elements.get(self.state, []):             
-            if hasattr(e, "draw"):              
-                #Fragt ab ob eine draw funktion existiert                
-                e.draw(screen)     
+    def draw(self, screen):
+        # Alle normalen Elemente, die nicht in Gruppen sind
+        for e in self.elements.get(self.state, []):
+            if hasattr(e, "draw") and not isinstance(e, gegner.Gegner):
+                e.draw(screen)
+
+        # Gegner separat über die Gruppe zeichnen
+        self.gegner_list.draw(screen)
 
     def update(self,delta_time):         
-        for e in self.elements.get("game",[]):             
-                if isinstance(e, gegner.Gegner):                 
-                    self.gegner_list.add(e)           
+        for e in self.elements.get("game", []):
+            if isinstance(e, gegner.Gegner) and e not in self.gegner_list:
+                self.gegner_list.add(e)         
         for e in self.elements.get(self.state, []):             
             if hasattr(e, "update"):              
                 #Fragt ab ob eine update funktion existiert                 
@@ -118,11 +123,32 @@ class GUIManager:
             if hasattr(e, "handle_event"):                 
                 e.handle_event(event)
 
+    def gegner_kill(self):
+        bullet_group = pygame.sprite.Group()
+        for e in self.elements.get("game", []):
+            if isinstance(e, freund.Freund):
+                bullet_group.add(*e.projectiles_return())
+        
+        hits = pygame.sprite.groupcollide(bullet_group, self.gegner_list, True, False)
+
+        for bullet, enemies in hits.items():
+            for gegner in enemies:
+                gegner.die()  # entfernt aus Gruppe
+                if gegner in self.elements[self.state]:
+                    self.elements[self.state].remove(gegner)  # entfernt auch aus Master-Liste
+                    print("Geld vorher:", self.geld)
+                    self.geld += 1
+                    print("Geld nachher:", self.geld)
+                    print(self.geld)
+            bullet.die()
+
 class Text(GUIElement):     
-    def __init__(self, x, y,text,font_size=24,color=(255, 255, 255),font_path=None,center=False):         
+    def __init__(self, x, y,text,text_function=None,font_size=24,color=(255, 255, 255),font_path=None,center=False):         
         self.x = x         
         self.y = y         
-        self.text = text         
+        self.text = text
+        self.text_function = text_function  # 🔥 Funktion speicher
+        #self.update_text =   update_text
         self.color = color         
         self.center = center           
         self.font = pygame.font.Font(font_path, font_size)                  
@@ -131,11 +157,19 @@ class Text(GUIElement):
         if self.center:             
             self.rect.center = (self.x, self.y)         
         else:             
-            self.rect.topleft = (self.x, self.y)       
+            self.rect.topleft = (self.x, self.y) 
+
+        self.last_update_time = pygame.time.get_ticks()  # **NEU** Zeitpunkt des letzten Updates
+        self.update_interval = 1000  # **NEU** Update-Intervall in Millisekunden (jede Sekunde)
+        self.gui = GUIElement       
 
     def set_text(self, new_text):         
         self.text = new_text         
-        self._render_text()       
+        self._render_text()  
+
+    def _render_text(self):
+        """Helfermethode, um den Text zu rendern"""
+        self.surface = self.font.render(self.text, True, self.color)     
 
     def set_color(self, new_color):         
         self.color = new_color         
@@ -143,3 +177,16 @@ class Text(GUIElement):
 
     def draw(self, screen):         
         screen.blit(self.surface, self.rect) 
+
+    def update(self, dt):
+        new_text = str(self.text_function())  # 🔥 Wert abrufen
+
+        if new_text != self.text:
+            self.text = new_text
+            self.surface = self.font.render(self.text, True, self.color)
+
+            if self.center:
+                self.rect = self.surface.get_rect(center=(self.x, self.y))
+            else:
+                self.rect = self.surface.get_rect(topleft=(self.x, self.y))
+

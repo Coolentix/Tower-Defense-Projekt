@@ -23,6 +23,8 @@ class Spiel:
         self.screen_state = self.LOADINGSCREEN
 
         self.gui = gui.GUIManager(self.screen_state)
+        self.gui.geld
+        self.freundeliste=[]
         
         self.game_speed = 1
 
@@ -63,61 +65,13 @@ class Spiel:
         self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement2)) #Hier dann anderer Typ
         self.gui.add_game(gui.Button(x=panel_x,y=button_y + button_width + gap,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement3))
         self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y + button_width + gap,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement4))
+        self.gui.add_game(gui.Text(x=self.screen_x // 2,y=50 // 2,text="0",text_function=lambda: self.gui.geld,font_size=50,color=(0, 0, 0),center=True))
         clock = pygame.time.Clock()
 
         self.running = True
 
-        #Runde erstellen
-        #self.gui.add_game(gegner.Runde(gegner.Runde.runde1, self.tilemap,self.tilemap.map_one(), (self.screen_x, self.screen_y)))
-
-        # 1. Delay pro Gegnertyp definieren
-        delay_dict = {
-            gegner.EnemyType.WALKER: 100,
-            gegner.EnemyType.RUNNER: 50,
-            gegner.EnemyType.TANK: 200
-        }
-
-        # 2. Runde erstellen und Spawnzeiten berechnen
-        runde = gegner.Runde(1, delay_dict)  # <-- Hier wird die Variable "runde" erzeugt
-
-        # 3. Spawner erstellen
-        """
-        self.spawner = GegnerSpawner(
-            runde.runde,               # Liste der Gegner + Spawnzeiten
-            self.tilemap,
-            self.tilemap.map_one(),
-            (self.screen_x, self.screen_y),
-            self.gui
-)
-"""
-        # Vorbereitung
-        pending = list(runde.runde)  # Gegner, die noch kommen
-        active_enemies = []
-        timer = 0
-
-        # Im Game-Loop:
-        delta_time = clock.get_time() / 1000  # Sekunden seit letztem Frame
-        timer += delta_time * 1000           # in Millisekunden
-
-        # Gegner spawnen, wenn Zeit erreicht
-        while pending and pending[0][1] <= timer:
-            enemy_type, spawn_time = pending.pop(0)
-            enemy = gegner.Gegner(
-                enemy_type,
-                self.tilemap,
-                self.tilemap.map_one(),
-                "../Tower-Defense-Projekt/bilder/pixil-frame-0.png"
-            )
-            self.gui.add_game(enemy)
-            active_enemies.append(enemy)
-
-        # Alle aktiven Gegner updaten
-        for enemy in active_enemies:
-            enemy.update(delta_time)
-
-
         while self.running:
-
+            
             self.dt = clock.tick(60)
 
             #Menu Handle:
@@ -129,6 +83,18 @@ class Spiel:
                 self.menu()
             elif self.screen_state == self.GAME:
                 self.game()
+                key = pygame.key.get_pressed()
+                print(key)
+                if key[pygame.K_e] == True:
+                    
+                    self.screen.blit(self.image, self.rect)
+                    for i in range(0, len(self.gui.elements["game"])):
+                        if isinstance(self.gui.elements["game"][i],freund.Freund):
+                            pygame.draw.circle(self.screen, (50, 100, 50), self.rect.center, self.gui.elements["game"][i].range, 1)
+                            self.screen.blit(self.image, self.gui.elements["game"][i].pos)
+
+                                   
+                
             elif self.screen_state == self.SETTINGS:
                 self.settings()
 
@@ -140,6 +106,7 @@ class Spiel:
             clock.tick(60)  # limitiert FPS auf 60
 
         pygame.quit()
+
 
 #Methoden
     def quit_game(self):
@@ -170,8 +137,7 @@ class Spiel:
 
             self.gui.handle_event(event)
 
-        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/image.png").convert_alpha()
-        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/image.png").convert_alpha()
+        self.image = pygame.image.load("../Tower-Defense-Projekt/bilder/pixil-frame-0 (2).png").convert_alpha()
         width = self.image.get_width()
         height = self.image.get_height()
         self.image = pygame.transform.scale(self.image, (self.screen_x,self.screen_y))
@@ -199,22 +165,11 @@ class Spiel:
 
         self.gui.draw(self.screen)
 
-    #def titlescreen(self):
-      #  self.screen.fill((255,255,255))
-
-      #  for event in pygame.event.get():
-       #     if event.type == pygame.QUIT:
-       #         self.running = False
-       #     self.gui.handle_event(event)
-
-       # self.gui.draw(self.screen)
-
 
     def game(self):
         self.screen.fill((255,255,255))
  
         # HIER DAS SPIEL RENDERN
-        #self.tilemap.draw_tilemap(self.screen)
 
         # Ereignisse abfragen
         # Das pygame.QUIT-Event wird ausgelöst, wenn der Benutzer das Fenster über das Schließen-Symbol (X) beendet.
@@ -225,11 +180,13 @@ class Spiel:
                 if event.key == pygame.K_RETURN:
                     self.spawn_enemy()
 
-            self.gui.handle_event(event)
+            self.gui.handle_event(event) 
 
         
         self.gui.draw(self.screen)
         self.gui.update(self.dt)
+
+        self.gui.gegner_kill()
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
@@ -263,19 +220,23 @@ class Spiel:
 
         self.gui.add_loadingscreen(gui.Button(x=self.screen_x // 2 - BUTTON_W // 2,y=y,width=BUTTON_W,height=BUTTON_H,color=(0, 0, 0),action=action))
 
-        self.gui.add_loadingscreen(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text,font_size=100,color=(255, 255, 255),center=True))
+        self.gui.add_loadingscreen(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text  ,font_size=100,color=(255, 255, 255),center=True))
 
     def enable_friend_placement1(self):
-        self.gui.placing_friend1 = True
+        if self.gui.geld>=0:
+            self.gui.placing_friend1 = True
 
     def enable_friend_placement2(self):
-        self.gui.placing_friend2 = True
+        if self.gui.geld>=25:
+            self.gui.placing_friend2 = True
 
     def enable_friend_placement3(self):
-        self.gui.placing_friend3 = True
+        if self.gui.geld>=45:
+            self.gui.placing_friend3 = True
     
     def enable_friend_placement4(self):
-        self.gui.placing_friend4 = True
+        if self.gui.geld>=60:
+            self.gui.placing_friend4 = True
 
 class Kauf:
     pass
