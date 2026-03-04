@@ -24,6 +24,7 @@ class Spiel:
 
         self.gui = gui.GUIManager(self.screen_state)
         self.gui.geld
+        self.freundeliste=[]
         
         self.game_speed = 1
 
@@ -82,11 +83,18 @@ class Spiel:
                 self.menu()
             elif self.screen_state == self.GAME:
                 self.game()
-                key = key.get_pressed()
+                key = pygame.key.get_pressed()
+                print(key)
                 if key[pygame.K_e] == True:
-                    pygame.draw.circle(self.screen, (50, 100, 50), self.freund.rect.center, self.freund.range, 1)
+                    
                     self.screen.blit(self.image, self.rect)
+                    for i in range(0, len(self.gui.elements["game"])):
+                        if isinstance(self.gui.elements["game"][i],freund.Freund):
+                            pygame.draw.circle(self.screen, (50, 100, 50), self.rect.center, self.gui.elements["game"][i].range, 1)
+                            self.screen.blit(self.image, self.gui.elements["game"][i].pos)
 
+                                   
+                
             elif self.screen_state == self.SETTINGS:
                 self.settings()
 
