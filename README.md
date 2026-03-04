@@ -8,3 +8,4 @@ git checkout main        # oder dein Ziel-Branch
 git pull
 
 git merge feature-branch --no-commit --no-ff
+git merge Jannik --no-commit --no-ff
