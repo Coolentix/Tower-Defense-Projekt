@@ -42,7 +42,7 @@ class Spiel:
         self.LOADINGSCREEN = "loadingscreen"
         self.TITLESCREEN = "titlescreen"
 
-        self.screen_state = self.GAME
+        self.screen_state = self.LOADINGSCREEN
 
         self.gui = gui.GUIManager(self.screen_state)
         self.gui.geld
