@@ -18,6 +18,9 @@ class Freund:
         self.damage = self.freund_Stats["damage"]
         self.kosten = self.freund_Stats["kosten"]
 
+        self.fire_frame = 18
+        self.has_fired = False
+
         self.angle = 0
 
         self.target = None
@@ -64,8 +67,8 @@ class Freund:
             self.target = self.find_target(gegner_liste)
 
         # ---- Schießen ----
-        if self.target and self.timer >= self.fire_rate:
-            self.shoot()
+        if self.target and self.timer >= self.fire_rate and not self.is_shooting:
+            self.start_shoot_animation()
             self.timer = 0
 
         # ---- Projectiles updaten ----
@@ -78,8 +81,19 @@ class Freund:
         if self.is_shooting:
             self.shoot_animation.update(dt)
 
+            # Projektil beim Fire-Frame erzeugen
+            if (self.shoot_animation.current_frame == self.fire_frame
+                and not self.has_fired
+                and self.target):
+
+                self.spawn_projectile()
+                self.has_fired = True
+
+            # Animation fertig
             if self.shoot_animation.current_frame == self.shoot_animation.frame_count - 1:
                 self.is_shooting = False
+
+
 
     def find_target(self, gegner_liste):
         turm_pos = pygame.math.Vector2(self.rect.center)
@@ -90,7 +104,8 @@ class Freund:
                 return g
         return None
 
-    def shoot(self):
+    def spawn_projectile(self):
+
         start_pos = pygame.math.Vector2(self.pos)
         ziel_pos = pygame.math.Vector2(self.target.get_aim_point())
 
