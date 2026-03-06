@@ -3,7 +3,7 @@ import pygame
 class Gegner(pygame.sprite.Sprite):
     def __init__(self, enemy_type, map, path, image_path=None, game_speed=0.1):
         super().__init__() # Greife auf EnemyType zu
-
+        self.leben = 200
         self.enemy_type = enemy_type
         self.Enemy_Stats = EnemyType.Enemy_Stats[enemy_type]
 
@@ -50,6 +50,8 @@ class Gegner(pygame.sprite.Sprite):
     def update(self,delta_time):
         if not self.path:
             self.kill()  # Entferne den Gegner, wenn der Pfad beendet ist
+            print("Ziel")
+            self.leben -= 1
             return False
 
         # Aktuelles Ziel         
@@ -67,7 +69,7 @@ class Gegner(pygame.sprite.Sprite):
         distance = self.direction.length()
 
         if distance == 0:             
-            self.path.pop(0)             
+            self.path.pop(0)
             return
 
         # Ziel in diesem Frame erreichbar?

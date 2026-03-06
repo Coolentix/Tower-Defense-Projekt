@@ -47,7 +47,8 @@ class Spiel:
         self.gui = gui.GUIManager(self.screen_state)
         self.gui.geld
         self.freundeliste=[]
-        
+
+        self.leben = 200
 
         self.game_speed = 1
 
