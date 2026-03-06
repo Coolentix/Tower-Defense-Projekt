@@ -45,8 +45,14 @@ class Spiel:
         self.screen_state = self.GAME
 
         self.gui = gui.GUIManager(self.screen_state)
+        self.gui.geld
+        self.freundeliste=[]
+        
 
         self.game_speed = 1
+
+        self.active_friend = None
+        self.global_range = False
         self.runden_anzahl = 0
         self.runde = None
 
@@ -88,12 +94,13 @@ class Spiel:
         self.gui.add_game(gui.Button(x=panel_x,y=button_y + button_width + gap,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement3))
         self.gui.add_game(gui.Button(x=panel_x + button_width + gap,y=button_y + button_width + gap,width=button_width,height=button_height,color=(0, 0, 0),action=self.enable_friend_placement4))
         self.gui.add_game(gui.Button(x=self.screen_x - 100 - gap,y=self.screen_y - 100 - gap,width=100,height=100,color=(0, 0, 0),action=self.runden_start))
+        self.gui.add_game(gui.Text(x=self.screen_x // 2,y=50 // 2,text="0",text_function=lambda: self.gui.geld,font_size=50,color=(0, 0, 0),center=True))
         clock = pygame.time.Clock()
 
         self.running = True
 
         while self.running:
-
+            
             self.dt = clock.tick(60)
 
             #Menu Handle:
@@ -117,6 +124,7 @@ class Spiel:
             clock.tick(60)  # limitiert FPS auf 60
 
         pygame.quit()
+
 
 #Methoden
     def quit_game(self):
@@ -205,6 +213,19 @@ class Spiel:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.spawn_enemy()
+                if event.key == pygame.K_e :
+                    #print("E gedrückt")
+                    for element in self.gui.elements["game"]:
+                        if isinstance(element, freund.Freund):
+                            self.active_friend = element
+                            print(element.range_active())
+                            if not element.range_active():
+                                element.show_range = not element.show_range
+                                #self.tilemap.range(element.range)
+                            else:
+                                element.show_range = False
+                                #self.tilemap.range(element.range)
+                            
 
             adjusted_event = self.get_adjusted_event(event)
             self.gui.handle_event(adjusted_event) 
@@ -254,19 +275,23 @@ class Spiel:
 
         self.gui.add_loadingscreen(gui.Button(x=self.screen_x // 2 - BUTTON_W // 2,y=y,width=BUTTON_W,height=BUTTON_H,color=(0, 0, 0),action=action))
 
-        self.gui.add_loadingscreen(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text,font_size=100,color=(255, 255, 255),center=True))
+        self.gui.add_loadingscreen(gui.Text(x=self.screen_x // 2,y=y + BUTTON_H // 2,text=text  ,font_size=100,color=(255, 255, 255),center=True))
 
     def enable_friend_placement1(self):
-        self.gui.placing_friend1 = True
+        if self.gui.geld>=0:
+            self.gui.placing_friend1 = True
 
     def enable_friend_placement2(self):
-        self.gui.placing_friend2 = True
+        if self.gui.geld>=25:
+            self.gui.placing_friend2 = True
 
     def enable_friend_placement3(self):
-        self.gui.placing_friend3 = True
+        if self.gui.geld>=45:
+            self.gui.placing_friend3 = True
     
     def enable_friend_placement4(self):
-        self.gui.placing_friend4 = True
+        if self.gui.geld>=60:
+            self.gui.placing_friend4 = True
 
 class Kauf:
     pass

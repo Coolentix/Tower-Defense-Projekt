@@ -1,7 +1,7 @@
 import pygame
 
 class Freund:
-    def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif",game_speed=0.5):
+    def __init__(self,map, position, f_typ=0, image_path="../Tower-Defense-Projekt/bilder/Ameise.gif",game_speed=0.5, show_range=False):
         self.schaden = 0
         self.rasse = ""
         self.row, self.col = map.ROWS, map.COLS
@@ -22,6 +22,8 @@ class Freund:
         self.target = None
         self.timer=0
         self.projectiles = pygame.sprite.Group()  
+
+        self.show_range = show_range   # Toggle-Zustand
 
         # ---- Bild ----
         if isinstance(image_path, str):
@@ -92,11 +94,17 @@ class Freund:
 
     def draw(self,screen):
         #pygame.draw.circle(screen, (50, 200, 50), self.pos, 15)
-        pygame.draw.circle(screen, (50, 100, 50), self.rect.center, self.range, 1)
+        #pygame.draw.circle(screen, (50, 100, 50), self.rect.center, self.range, 1)
         screen.blit(self.new_angle_image, self.rect)
+        
+        if self.show_range:
+            pygame.draw.circle(screen, (50, 100, 50), self.rect.center, self.range, 1)
 
         for p in self.projectiles:
             p.draw(screen)
+    
+    def range_active(self):
+        return self.show_range
 
     def projectiles_return(self):
         return self.projectiles
@@ -130,7 +138,7 @@ class Projektil(pygame.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.image, self.rect)    #damit das bild und nicht ein kreis gezeichnet wird
 
-
+        
     def die(self):
         self.kill()
 
@@ -143,7 +151,7 @@ class freund_type:
         print("Hallo")
         
         self.freund_Stats = {
-            0: {"range": 750, "damage": 2, "fire_rate": 200, "kosten": 400},
+            0: {"range": 750, "damage": 2, "fire_rate": 1, "kosten": 400},
             1: {"range": 400, "damage": 4, "fire_rate": 100, "kosten": 700},
             2: {"range": 200, "damage": 1, "fire_rate": 50, "kosten": 600},
             3: {"range": 600, "damage": 0.1, "fire_rate": 0.1, "kosten": 1000}
